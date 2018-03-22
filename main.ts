@@ -8,7 +8,7 @@ app.on('ready', () => {
     mainWindow = new BrowserWindow({});
 
     mainWindow.loadURL(urlFormat({
-        pathname: pJoin(__dirname, 'index.html'),
+        pathname: pJoin(__dirname, 'dist/index.html'),
         protocol: 'file:',
         slashes: true
     }));
