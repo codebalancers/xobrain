@@ -11,14 +11,15 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "build": "ng build --prod && tsc main.ts",
-    "build.tsc": "tsc main.ts",
+    "build.dev.w": "concurrently --kill-others \"ng build --watch\" \"tsc -w main.ts\"",
+    "build.dev": "ng build && tsc main.ts",
+    "build.prod": "ng build --prod --aot && tsc main.ts",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "runApp": "electron ./dist/main.js",
-    "start": "npm run build && electron main.js",
+    "runApp": "electron main.js",
+    "start": "npm run build.dev && electron main.js",
     "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
     "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName='CE' --version-string.FileDescription='CE' --version-string.ProductName='Exobrain'",
     "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/icon.png --prune=true --out=release-builds",
@@ -63,6 +64,7 @@
     "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^11.1.0",
     "electron-rebuild": "^1.7.3",
-    "tslint": "^5.9.1"
+    "tslint": "^5.9.1",
+    "concurrently": "^3.5.0"
   }
 }
