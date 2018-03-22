@@ -1,0 +1,15 @@
+{
+  "name": "exobrain",
+  "version": "1.0.0",
+  "description": "Contextual desktop wiki",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.arnebosien.de/arne/exobrain"
+  },
+  "author": "Arne Bosien",
+  "license": "MIT"
+}
