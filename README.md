@@ -3,7 +3,7 @@
 Contextual desktop wiki using
 
 * electron
-* angular
+* ionic
 * d3
 * knex
 * sqlite
