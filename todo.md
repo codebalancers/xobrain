@@ -1,4 +1,2 @@
-* add angular
-* add d3
-* add sqlite
-* knex?
+* set up db & knex
+* test visualization
