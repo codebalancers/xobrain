@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnInit
@@ -11,9 +12,10 @@ import { D3Service, ForceDirectedGraph } from '../../d3';
 
 @Component({
   selector: 'graph',
+  styles: [ ':host { display: block; height: 100%}' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
+    <svg #svg width="100%" height="100%">
       <g [zoomableOf]="svg">
         <g [linkVisual]="link" *ngFor="let link of links"></g>
         <g [nodeVisual]="node" *ngFor="let node of nodes"
@@ -28,14 +30,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
   @Input('links') links;
 
   graph: ForceDirectedGraph;
-  private _options: { width, height } = { width: 800, height: 600 };
+  private _options: { width, height } = { width: '100%', height: '100%' };
 
   @HostListener('window:resize', [ '$event' ])
   onResize(event) {
     this.graph.initSimulation(this.options);
   }
 
-  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) {
+  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef, private el: ElementRef) {
   }
 
   ngOnInit() {
@@ -57,9 +59,16 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   get options() {
+    const width = this.el.nativeElement.clientWidth;
+    const height = this.el.nativeElement.clientHeight;
+
+    console.log('--------')
+    console.log(width);
+    console.log(height);
+
     return this._options = {
-      width: window.innerWidth,
-      height: window.innerHeight
+      width: width,
+      height: height
     };
   }
 }
