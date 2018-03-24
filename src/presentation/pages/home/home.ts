@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Link, Node } from '../../app/d3';
-import APP_CONFIG from '../../app/app.config';
+import { Link, Node } from '../../d3/index';
+import APP_CONFIG from '../../../app/app.config';
 
 @Component({
   selector: 'page-home',

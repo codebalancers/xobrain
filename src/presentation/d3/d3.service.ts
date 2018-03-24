@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ForceDirectedGraph, Link, Node } from './models';
+import { ForceDirectedGraph, Link, Node } from './models/index';
 import * as d3 from 'd3';
 
 @Injectable()

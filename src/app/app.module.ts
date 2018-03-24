@@ -5,11 +5,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { D3_DIRECTIVES } from './d3/directives';
-import { SHARED_VISUALS } from './visuals/shared';
-import { D3Service } from './d3';
-import { GraphComponent } from './visuals/graph/graph.component';
+import { HomePage } from '../presentation/pages/home/home';
+import { D3_DIRECTIVES } from '../presentation/d3/directives';
+import { SHARED_VISUALS } from '../presentation/visuals/shared';
+import { D3Service } from '../presentation/d3';
+import { GraphComponent } from '../presentation/visuals/graph/graph.component';
 
 @NgModule({
   declarations: [

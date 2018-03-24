@@ -1,6 +1,7 @@
-import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
+import { Accelerator, app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
 import { join as pJoin } from 'path';
 import { format as urlFormat } from 'url';
+import "reflect-metadata";
 
 let mainWindow = null;
 
@@ -27,7 +28,7 @@ const mainMenuTemplate: MenuItemConstructorOptions[] = [
     submenu: [
       {
         label: 'Quit',
-        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        accelerator: (process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q') as Accelerator,
         click() {
           app.quit();
         }

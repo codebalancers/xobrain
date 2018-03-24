@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { ForceDirectedGraph, Node } from '../models';
+import { ForceDirectedGraph, Node } from '../models/index';
 import { D3Service } from '../d3.service';
 
 @Directive({
