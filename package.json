@@ -59,6 +59,7 @@
     "@ionic/app-scripts": "3.1.8",
     "@types/d3": "^5.0.0",
     "@types/knex": "^0.14.9",
+    "@types/simplemde": "^1.11.7",
     "concurrently": "^3.5.0",
     "electron": "1.8.4",
     "electron-installer-dmg": "^0.2.1",

@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { CardViewPage } from './card-view';
+import { MdeModule } from '../../visuals/mde/mde.module';
 
 @NgModule({
   declarations: [
-    CardViewPage,
+    CardViewPage
   ],
   imports: [
-    IonicPageModule.forChild(CardViewPage)
+    IonicPageModule.forChild(CardViewPage), MdeModule
   ],
   exports: [
     CardViewPage
