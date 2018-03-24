@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Link, Node } from '../../d3/index';
 import APP_CONFIG from '../../../app/app.config';
 import { CardService } from '../../../business/boundary/card.service';
-import { CardViewPage } from '../card-view/card-view';
 
 @Component({
   selector: 'page-home',
@@ -11,9 +10,6 @@ import { CardViewPage } from '../card-view/card-view';
 export class HomePage implements OnInit {
   nodes: Node[] = [];
   links: Link[] = [];
-
-  tab1 = 'CardViewPage';
-  tab2 = 'CardEditorPage';
 
   constructor(private cardService: CardService) {
     const N = APP_CONFIG.N,

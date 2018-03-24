@@ -6,8 +6,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-grid>
+<ion-content>
+  <ion-grid no-padding>
     <ion-row>
 
       <ion-col col-8>
@@ -16,8 +16,10 @@
 
       <ion-col col-4>
         <ion-tabs>
-          <ion-tab tabTitle="h1" [root]="tab1"></ion-tab>
-          <ion-tab tabTitle="h2" [root]="tab2"></ion-tab>
+          <ion-tab tabTitle="View" root="CardViewPage"></ion-tab>
+          <ion-tab tabTitle="Edit" root="CardEditorPage"></ion-tab>
+          <ion-tab tabTitle="Tags & References" root="CardEditorPage"></ion-tab>
+          <ion-tab tabTitle="Attachments" root="CardEditorPage"></ion-tab>
         </ion-tabs>
       </ion-col>
 

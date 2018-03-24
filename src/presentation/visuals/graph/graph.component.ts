@@ -62,10 +62,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     const width = this.el.nativeElement.clientWidth;
     const height = this.el.nativeElement.clientHeight;
 
-    console.log('--------')
-    console.log(width);
-    console.log(height);
-
     return this._options = {
       width: width,
       height: height
