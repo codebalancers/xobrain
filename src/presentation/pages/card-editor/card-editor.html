@@ -1,10 +1,12 @@
-<ion-list>
-  <ion-item>
-    <ion-label color="primary" stacked>Title</ion-label>
-    <ion-input placeholder="Titel"></ion-input>
-  </ion-item>
+<form>
+  <ion-list>
+    <ion-item>
+      <ion-label color="primary" stacked>Title</ion-label>
+      <ion-input [(ngModel)]="card.title" placeholder="Title" name="title"></ion-input>
+    </ion-item>
 
-  <div>
-    <md-editor item-content></md-editor>
-  </div>
-</ion-list>
+    <div>
+      <md-editor item-content [(model)]="card.content"></md-editor>
+    </div>
+  </ion-list>
+</form>

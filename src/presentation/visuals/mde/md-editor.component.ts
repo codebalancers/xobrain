@@ -1,37 +1,43 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as SimpleMDE from 'simplemde';
-
-// declare var SimpleMDE: any;
 
 @Component({
   selector: 'md-editor',
-  template: '<textarea #simplemde>{{text}}</textarea>',
+  template: '<textarea  #simplemde></textarea>',
 })
 export class MdEditorComponent implements AfterViewInit {
   @Input() viewMode = false;
 
+  @Input() model: string;
+  @Output() modelChange = new EventEmitter<string>();
+
   @ViewChild('simplemde') textarea: ElementRef;
 
-  @Input() text: string;
+  private editor: SimpleMDE;
 
   ngAfterViewInit() {
     if (this.viewMode) {
-      const editor = new SimpleMDE({
+      this.editor = new SimpleMDE({
         element: this.textarea.nativeElement,
         toolbar: false,
         status: false
       });
 
-      (editor as any).togglePreview();
-      return editor;
+      (this.editor as any).togglePreview();
     } else {
-      const editor = new SimpleMDE({
+      this.editor = new SimpleMDE({
         element: this.textarea.nativeElement,
         spellChecker: false,
+        // forceSync: true,
         showIcons: [ 'code' ],
         hideIcons: [ 'preview', 'side-by-side', 'fullscreen', 'guide', 'image', 'table' ]
       });
-      return editor;
     }
+
+    this.editor.codemirror.on('change', () => {
+      this.modelChange.emit(this.editor.value())
+    });
+
+    this.editor.value(this.model);
   }
 }

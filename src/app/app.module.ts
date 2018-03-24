@@ -13,6 +13,7 @@ import { GraphComponent } from '../presentation/visuals/graph/graph.component';
 import { CardService } from '../business/boundary/card.service';
 import { DatabaseService } from '../business/control/database.service';
 import { ElectronService } from '../business/control/electron.service';
+import { EditService } from '../presentation/services/edit.service';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -41,7 +42,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
-    CardService, DatabaseService, ElectronService,
+    CardService, DatabaseService, ElectronService, EditService,
     {
       provide: APP_INITIALIZER,
       useFactory: dbInitializer,

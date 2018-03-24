@@ -21,13 +21,13 @@
           </button>
 
           <ion-fab-list side="bottom">
-            <button ion-fab >
+            <button ion-fab (click)="saveCard()">
               <ion-icon name="checkbox"></ion-icon>
             </button>
-            <button ion-fab>
+            <button ion-fab (click)="branchCard()">
               <ion-icon name="git-merge"></ion-icon>
             </button>
-            <button ion-fab>
+            <button ion-fab  (click)="addNewCard()">
               <ion-icon name="add"></ion-icon>
             </button>
           </ion-fab-list>
