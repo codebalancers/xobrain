@@ -6,10 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../presentation/pages/home/home';
 import { ConnectionService } from '../business/control/connection.service';
-import * as knex from 'knex';
-import * as electron from 'electron';
 
-const electron = (<any>window).require('electron') as electron;
 
 @Component({
   templateUrl: 'app.html'
@@ -25,8 +22,6 @@ export class MyApp {
       splashScreen.hide();
     });
 
-    (electron.remote.getGlobal('knex') as knex).select('FirstName').from('User').then(rows => console.log(rows));
-    // create connection
-    // connectionService.getConnection().select('FirstName').from('User').then(rows => console.log(rows));
+    connectionService.getConnection().select('FirstName').from('User').then(rows => console.log(rows));
   }
 }
