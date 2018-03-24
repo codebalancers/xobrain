@@ -5,15 +5,7 @@ import 'reflect-metadata';
 import * as knex from 'knex';
 import { Config } from 'knex';
 
-global[ 'knex' ] = knex(
-  {
-    client: 'sqlite3',
-    connection: {
-      filename: './database.sqlite'
-    },
-    debug: true
-  }
-);
+global[ 'knex' ] = knex(exportConfig());
 
 let mainWindow = null;
 
@@ -73,25 +65,12 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-
-class ConnectionService {
-  private knex;
-
-  constructor() {
-    this.knex = knex(this.exportConfig());
-  }
-
-  public getConnection(): knex {
-    return this.knex;
-  }
-
-  private exportConfig(): Config {
-    return {
-      client: 'sqlite3',
-      connection: {
-        filename: './database.sqlite'
-      },
-      debug: true
-    };
-  }
+function exportConfig(): Config {
+  return {
+    client: 'sqlite3',
+    connection: {
+      filename: './exobrain.sqlite'
+    },
+    debug: true
+  };
 }

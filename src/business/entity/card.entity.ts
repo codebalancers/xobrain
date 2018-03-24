@@ -10,9 +10,7 @@ export class CardEntity {
 
   content: string;
 
-  tags: TagEntity[];
-
-  links: CardEntity[];
-
-  files: FileEntity[];
+  // tags: TagEntity[];
+  // links: CardEntity[];
+  // files: FileEntity[];
 }
