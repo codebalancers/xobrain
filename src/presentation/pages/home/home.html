@@ -15,6 +15,24 @@
       </ion-col>
 
       <ion-col col-4>
+        <ion-fab top right>
+          <button ion-fab mini color="secondary">
+            <ion-icon name="add"></ion-icon>
+          </button>
+
+          <ion-fab-list side="bottom">
+            <button ion-fab >
+              <ion-icon name="checkbox"></ion-icon>
+            </button>
+            <button ion-fab>
+              <ion-icon name="git-merge"></ion-icon>
+            </button>
+            <button ion-fab>
+              <ion-icon name="add"></ion-icon>
+            </button>
+          </ion-fab-list>
+        </ion-fab>
+
         <ion-tabs>
           <ion-tab tabTitle="View" root="CardViewPage"></ion-tab>
           <ion-tab tabTitle="Edit" root="CardEditorPage"></ion-tab>

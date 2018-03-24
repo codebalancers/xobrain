@@ -18,7 +18,8 @@ export class MdEditorComponent implements AfterViewInit {
     if (this.viewMode) {
       const editor = new SimpleMDE({
         element: this.textarea.nativeElement,
-        toolbar: false
+        toolbar: false,
+        status: false
       });
 
       (editor as any).togglePreview();
