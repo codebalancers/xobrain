@@ -1,4 +1,5 @@
-* set up db & knex
+* ionic layout for card & forms
+* markdown renderer
 
 
 # Resources
