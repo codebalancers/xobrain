@@ -12,6 +12,7 @@ import { D3Service } from '../presentation/d3';
 import { GraphComponent } from '../presentation/visuals/graph/graph.component';
 import { CardService } from '../business/boundary/card.service';
 import { ConnectionService } from '../business/control/connection.service';
+import { ElectronService } from '../business/control/electron.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { ConnectionService } from '../business/control/connection.service';
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
-    CardService, ConnectionService
+    CardService, ConnectionService, ElectronService
   ]
 })
 export class AppModule {
