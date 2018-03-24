@@ -10,7 +10,8 @@ global[ 'knex' ] = knex(
     client: 'sqlite3',
     connection: {
       filename: './database.sqlite'
-    }
+    },
+    debug: true
   }
 );
 
@@ -89,7 +90,8 @@ class ConnectionService {
       client: 'sqlite3',
       connection: {
         filename: './database.sqlite'
-      }
+      },
+      debug: true
     };
   }
 }

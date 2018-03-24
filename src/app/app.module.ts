@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -11,8 +11,13 @@ import { SHARED_VISUALS } from '../presentation/visuals/shared';
 import { D3Service } from '../presentation/d3';
 import { GraphComponent } from '../presentation/visuals/graph/graph.component';
 import { CardService } from '../business/boundary/card.service';
-import { ConnectionService } from '../business/control/connection.service';
+import { DatabaseService } from '../business/control/database.service';
 import { ElectronService } from '../business/control/electron.service';
+
+
+export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
+  return (): Promise<any> => dbService.ensureSchema();
+}
 
 @NgModule({
   declarations: [
@@ -36,7 +41,13 @@ import { ElectronService } from '../business/control/electron.service';
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
-    CardService, ConnectionService, ElectronService
+    CardService, DatabaseService, ElectronService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: dbInitializer,
+      multi: true,
+      deps: [ DatabaseService ]
+    }
   ]
 })
 export class AppModule {

@@ -4,6 +4,8 @@ import { FileEntity } from './file.entity';
 export class CardEntity {
   id: number;
 
+  creationDate: Date;
+
   title: string;
 
   content: string;
