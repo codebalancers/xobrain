@@ -10,6 +10,8 @@ import { D3_DIRECTIVES } from '../presentation/d3/directives';
 import { SHARED_VISUALS } from '../presentation/visuals/shared';
 import { D3Service } from '../presentation/d3';
 import { GraphComponent } from '../presentation/visuals/graph/graph.component';
+import { CardService } from '../business/boundary/card.service';
+import { ConnectionService } from '../business/control/connection.service';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,7 @@ import { GraphComponent } from '../presentation/visuals/graph/graph.component';
     BrowserModule,
     IonicModule.forRoot(MyApp)
   ],
-  bootstrap: [IonicApp],
+  bootstrap: [ IonicApp ],
   entryComponents: [
     MyApp,
     HomePage
@@ -31,8 +33,9 @@ import { GraphComponent } from '../presentation/visuals/graph/graph.component';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    D3Service
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    D3Service,
+    CardService, ConnectionService
   ]
 })
 export class AppModule {

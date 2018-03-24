@@ -2,6 +2,8 @@ import { Accelerator, app, BrowserWindow, Menu, MenuItemConstructorOptions } fro
 import { join as pJoin } from 'path';
 import { format as urlFormat } from 'url';
 import "reflect-metadata";
+import { Config } from 'knex';
+import * as knex from 'knex';
 
 let mainWindow = null;
 
@@ -13,6 +15,8 @@ app.on('ready', () => {
     protocol: 'file:',
     slashes: true
   }));
+
+  new ConnectionService().getConnection().select('FirstName').from('User').then(rows => console.log(rows));
 
   // close whole app when main window is closed
   mainWindow.on('close', () => app.quit());
@@ -59,4 +63,26 @@ if (process.env.NODE_ENV !== 'production') {
       }
     ]
   });
+}
+
+
+class ConnectionService {
+  private knex;
+
+  constructor() {
+    this.knex = knex(this.exportConfig());
+  }
+
+  public getConnection(): knex {
+    return this.knex;
+  }
+
+  private exportConfig(): Config {
+    return {
+      client: 'sqlite3',
+      connection: {
+        filename: './database.sqlite'
+      }
+    };
+  }
 }
