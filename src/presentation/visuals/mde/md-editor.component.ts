@@ -32,11 +32,11 @@ export class MdEditorComponent implements AfterViewInit {
         showIcons: [ 'code' ],
         hideIcons: [ 'preview', 'side-by-side', 'fullscreen', 'guide', 'image', 'table' ]
       });
-    }
 
-    this.editor.codemirror.on('change', () => {
-      this.modelChange.emit(this.editor.value())
-    });
+      this.editor.codemirror.on('change', () => {
+        this.modelChange.emit(this.editor.value())
+      });
+    }
 
     this.editor.value(this.model);
   }
