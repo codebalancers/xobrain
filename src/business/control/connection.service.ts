@@ -7,7 +7,7 @@ export class ConnectionService {
   private knex;
 
   constructor(electronService: ElectronService) {
-    this.knex = electronService.getElectron().remote.getGlobal('knex') as knex;
+    this.knex = electronService.getRemote().getGlobal('knex') as knex;
   }
 
   public getConnection(): knex {

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import * as electron from 'electron';
-
-const electron = (<any>window).require('electron') as electron;
 
 @Injectable()
 export class ElectronService {
+  private _electron = (<any>window).require('electron');
 
-  public getElectron(): electron {
-    return electron;
+  public getRemote() {
+    return this._electron.remote;
+  }
+
+  public getElectron(): any {
+    return this._electron;
   }
 }
