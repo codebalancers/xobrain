@@ -1,9 +1,18 @@
 import { Accelerator, app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
 import { join as pJoin } from 'path';
 import { format as urlFormat } from 'url';
-import "reflect-metadata";
-import { Config } from 'knex';
+import 'reflect-metadata';
 import * as knex from 'knex';
+import { Config } from 'knex';
+
+global[ 'knex' ] = knex(
+  {
+    client: 'sqlite3',
+    connection: {
+      filename: './database.sqlite'
+    }
+  }
+);
 
 let mainWindow = null;
 
@@ -15,8 +24,6 @@ app.on('ready', () => {
     protocol: 'file:',
     slashes: true
   }));
-
-  new ConnectionService().getConnection().select('FirstName').from('User').then(rows => console.log(rows));
 
   // close whole app when main window is closed
   mainWindow.on('close', () => app.quit());
