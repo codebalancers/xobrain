@@ -1,6 +1,6 @@
-* ionic layout for card & forms
-* markdown renderer
-
+* links etc on creation etc.
+* connect visualization to data
+* store modification date (instead of creation date) 
 
 # Resources
 * https://github.com/maximegris/angular-electron
