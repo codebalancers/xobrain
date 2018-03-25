@@ -35,7 +35,7 @@ export class ForceDirectedGraph {
   updateLinks() {
     this.simulation.force('links',
       d3.forceLink(this.links)
-        .id(d => d['id'])
+        .id(d => d['card']['id'])
         .strength(FORCES.LINKS)
     );
   }

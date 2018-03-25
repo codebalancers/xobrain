@@ -1,4 +1,5 @@
 import APP_CONFIG from '../../../app/app.config';
+import { CardEntity } from '../../../business/entity/card.entity';
 
 export class Node implements d3.SimulationNodeDatum {
   // optional - defining optional implementation properties - required for relevant typing assistance
@@ -10,11 +11,9 @@ export class Node implements d3.SimulationNodeDatum {
   fx?: number | null;
   fy?: number | null;
 
-  id: string;
   linkCount: number = 0;
 
-  constructor(id) {
-    this.id = id;
+  constructor(public card: CardEntity) {
   }
 
   normal = () => {

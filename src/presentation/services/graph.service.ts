@@ -51,4 +51,19 @@ export class GraphService implements OnDestroy {
   ngOnDestroy(): void {
     this._ticksSubject.complete();
   }
+
+  public updateLinks(oldId: number, newId: number): void {
+    this.links.filter(l => l.source === oldId).forEach(l => l.source = newId);
+    this.links.filter(l => l.target === oldId).forEach(l => l.target = newId);
+
+    if (LangUtils.isDefined(this.graph)) {
+      this.graph.updateNodes();
+      this.graph.updateLinks();
+      this.graph.restart();
+    }
+  }
+
+  public refresh(): void {
+    this.graph.restart();
+  }
 }

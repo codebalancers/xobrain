@@ -25,23 +25,24 @@ export class HomePage implements OnInit, OnDestroy {
         const nodes: Node[] = [];
         const links: Link[] = [];
 
-        if (LangUtils.isDefined(card.id)) {
+        if (card.id > 0) {
           // handle persisted card
-          nodes.push(new Node(card.id));
+          nodes.push(new Node(card));
 
           if (LangUtils.isArray(card.links)) {
             card.links.forEach(c => {
-              nodes.push(new Node(c.id));
+              nodes.push(new Node(c));
               links.push(new Link(card.id, c.id));
             });
           }
         } else {
           // handle new
-          nodes.push(new Node(-1));
+          console.log(card);
+          nodes.push(new Node(card));
 
           if (LangUtils.isDefined(card.parent)) {
             // handle branched card (has a parent)
-            links.push(new Link(card.parent.id, -1));
+            links.push(new Link(card.parent.id, card.id));
           }
         }
 
@@ -56,8 +57,17 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   saveCard(): void {
-    this.cardService.save(this.card);
-    // TODO after save the card has an ID and the graph must be updated
+    const oldId = this.card.id;
+    this.cardService
+      .save(this.card)
+      .subscribe(() => {
+        // save operation persisted new entity with auto-incremented id
+        if (oldId !== this.card.id) {
+          this.graphService.updateLinks(oldId, this.card.id);
+        } else {
+          this.graphService.refresh();
+        }
+      });
   }
 
   branchCard(): void {
@@ -68,6 +78,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   addNewCard(): void {
     const c = new CardEntity();
+    c.id = -1;
     c.content = '';
     c.title = '';
     this.editService.cardSelected(c);

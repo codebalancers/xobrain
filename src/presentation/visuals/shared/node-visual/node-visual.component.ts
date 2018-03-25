@@ -15,7 +15,7 @@ import { Node } from '../../../d3';
       <svg:text
         class="node-name"
         [attr.font-size]="node.fontSize">
-        {{node.id}}
+        {{node.card.title}}
       </svg:text>
     </svg:g>
   `

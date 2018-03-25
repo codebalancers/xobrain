@@ -1,5 +1,5 @@
-* connect visualization to data
-* store modification date (instead of creation date) 
+* store modification date (instead of creation date)
+* d3: better link objectes instead of ids 
 * search form
 * tags form
 * links form

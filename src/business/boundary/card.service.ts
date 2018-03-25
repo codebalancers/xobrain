@@ -22,25 +22,30 @@ export class CardService {
       });
   }
 
-  public save(card: CardEntity): void {
+  public save(card: CardEntity): Observable<void> {
     console.log('save', card);
 
     if (card.id) {
       // -- update
-      this.dbService
-        .getConnection('card')
-        .where('id', '=', card.id)
-        .update({title: card.title, content: card.content})
-        .then(d => console.log(d));
+      return Observable
+        .fromPromise(
+          this.dbService
+            .getConnection('card')
+            .where('id', '=', card.id)
+            .update({title: card.title, content: card.content})
+        )
+        .map(d => this.updateReferences(card));
 
-      this.updateReferences(card);
     } else {
       // -- create
-      this.dbService
-        .getConnection('card')
-        .insert({title: card.title, content: card.content, creationDate: new Date()})
-        .returning('id')
-        .then(d => {
+      return Observable
+        .fromPromise(
+          this.dbService
+            .getConnection('card')
+            .insert({title: card.title, content: card.content, creationDate: new Date()})
+            .returning('id')
+        )
+        .map(d => {
           card.id = d[0];
 
           if (LangUtils.isDefined(card.parent)) {
@@ -238,6 +243,7 @@ export class CardService {
 
   public branchCard(parentCard: CardEntity): Observable<CardEntity> {
     const c = new CardEntity();
+    c.id = -1;
     c.content = '';
     c.title = '';
 
