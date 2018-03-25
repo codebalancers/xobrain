@@ -2,26 +2,32 @@ import * as knex from 'knex';
 import { Injectable } from '@angular/core';
 import { ElectronService } from './electron.service';
 
-const init_sql = `
+const init_sql_1 = `
   CREATE TABLE IF NOT EXISTS card(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     creationDate DATE,
     title CHAR(180),
     content TEXT
   );
+  `;
 
+const init_sql_2 = `
   CREATE TABLE IF NOT EXISTS file(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     creationDate DATE,
     data BLOB
   );
+  `;
 
+const init_sql_3 = `
   CREATE TABLE IF NOT EXISTS tag(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     creationDate DATE,
     name CHAR(100)
   );
-  
+  `;
+
+const init_sql_4 = `  
   CREATE TABLE IF NOT EXISTS card_tag(
     card_id INTEGER,
     tag_id INTEGER,
@@ -30,7 +36,9 @@ const init_sql = `
     FOREIGN KEY(tag_id) REFERENCES tag,
     UNIQUE (card_id, tag_id) ON CONFLICT IGNORE
   );
-  
+`;
+
+const init_sql_5 = `  
   CREATE TABLE IF NOT EXISTS card_card(
     card1_id INTEGER,
     card2_id INTEGER,
@@ -39,7 +47,9 @@ const init_sql = `
     FOREIGN KEY(card2_id) REFERENCES card,
     UNIQUE (card1_id, card2_id) ON CONFLICT IGNORE
   );
-  
+  `;
+
+const init_sql_6 = `  
   CREATE TABLE IF NOT EXISTS card_file(
     card_id INTEGER,
     file_id INTEGER,
@@ -58,9 +68,18 @@ export class DatabaseService {
     this.knex = electronService.getRemote().getGlobal('knex') as knex;
   }
 
-  public ensureSchema(): Promise<void> {
+  public ensureSchema(): Promise<any> {
     console.log('ensureSchema');
-    return this.knex.schema.raw(init_sql);
+
+    return Promise.all([
+        this.knex.raw(init_sql_1),
+        this.knex.raw(init_sql_2),
+        this.knex.raw(init_sql_3),
+        this.knex.raw(init_sql_4),
+        this.knex.raw(init_sql_5),
+        this.knex.raw(init_sql_6),
+      ]
+    );
   }
 
   public getConnection(): knex {

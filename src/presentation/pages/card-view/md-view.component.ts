@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import * as marked from 'marked';
+import { StringUtils } from '../../../util/string.utils';
 
 @Component({
   selector: 'md-view',
@@ -9,6 +10,8 @@ export class MdViewComponent {
   _model: string;
 
   @Input() set model(val: string) {
-    this._model = marked(val, undefined);
+    if (StringUtils.isNotBlank(val)) {
+      this._model = marked(val, undefined);
+    }
   }
 }
