@@ -41,8 +41,6 @@ export class ForceDirectedGraph {
   }
 
   public update(options: GraphOptions) {
-    console.log('links init sim', JSON.stringify(this.links));
-
     /** Updating the central force of the simulation */
     this.simulation.force('centers', d3.forceCenter(options.width / 2, options.height / 2));
 
@@ -50,13 +48,11 @@ export class ForceDirectedGraph {
     this.simulation.restart();
   }
 
-  public restart(){
+  public restart() {
     this.simulation.restart();
   }
 
   private _initSimulation(options: GraphOptions) {
-    console.log('before init sim', JSON.stringify(this.links));
-
     /** Creating the simulation */
     this.simulation = d3.forceSimulation()
       .force('charge',
