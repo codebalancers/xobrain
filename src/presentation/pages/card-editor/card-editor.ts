@@ -11,12 +11,15 @@ import { Subject } from 'rxjs/Subject';
 })
 export class CardEditorPage implements OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
-  card: CardEntity;
+  card: CardEntity = new CardEntity();
 
   constructor(editService: EditService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
-      .subscribe(card => this.card = card);
+      .subscribe(card => {
+        console.log('got car', card)
+        return this.card = card;
+      });
   }
 
   ngOnDestroy(): void {

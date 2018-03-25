@@ -25,7 +25,7 @@ export class CardService {
   public save(card: CardEntity): Observable<void> {
     console.log('save', card);
 
-    if (card.id) {
+    if (card.id > 0) {
       // -- update
       return Observable
         .fromPromise(
@@ -46,8 +46,10 @@ export class CardService {
             .returning('id')
         )
         .map(d => {
+          // set auto-generated id
           card.id = d[0];
 
+          // create link from parent
           if (LangUtils.isDefined(card.parent)) {
             this.createLink(card.parent, card);
           }
@@ -157,12 +159,14 @@ export class CardService {
         const card = ArrayUtils.getFirstElement(res);
 
         if (LangUtils.isUndefined(card)) {
+          console.log('getInitialCard', 'return fresh card');
           const c = new CardEntity();
           c.title = 'My first card';
           c.content = 'Write something...';
           return Observable.of(c);
         }
 
+        console.log('getInitialCard', card);
         return this.mapCard(card, true);
       });
   }
@@ -201,9 +205,13 @@ export class CardService {
           .where('card_card.card1_id', cardId)
       )
       .flatMap((res: any[]) => {
-        console.log(res);
-        const os = res.map(r => this.mapCard(r));
-        return Observable.forkJoin(os);
+        const os: Observable<CardEntity>[] = res.map(r => this.mapCard(r));
+
+        if (os.length === 0) {
+          return Observable.of([]);
+        } else {
+          return Observable.forkJoin(os);
+        }
       });
   }
 
@@ -237,7 +245,7 @@ export class CardService {
     });
 
     return Observable
-      .forkJoin(filesO, tagsO, linksO)
+      .forkJoin([filesO, tagsO, linksO])
       .map(res => cardEntity);
   }
 
