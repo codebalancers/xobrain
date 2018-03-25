@@ -19,7 +19,6 @@ import { Node } from '../../../d3';
       </svg:text>
     </svg:g>
   `
-  // styleUrls: ['./node-visual.component.scss']
 })
 export class NodeVisualComponent {
   @Input('nodeVisual') node: Node;

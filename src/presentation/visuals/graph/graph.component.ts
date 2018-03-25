@@ -5,66 +5,64 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Input,
+  OnDestroy,
   OnInit
 } from '@angular/core';
-import { D3Service, ForceDirectedGraph } from '../../d3';
+import { GraphOptions, Link, Node } from '../../d3/models';
+import { GraphService } from '../../services/graph.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'graph',
-  styles: [ ':host { display: block; height: 100%}' ],
+  styles: [':host { display: block; height: 100%}'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <svg #svg width="100%" height="100%">
       <g [zoomableOf]="svg">
-        <g [linkVisual]="link" *ngFor="let link of links"></g>
+        <g [linkVisual]="link" *ngFor="let link of _links"></g>
         <g [nodeVisual]="node" *ngFor="let node of nodes"
-           [draggableNode]="node" [draggableInGraph]="graph"></g>
+           [draggableNode]="node"></g>
       </g>
     </svg>
   `
-  // styleUrls: ['./graph.component.scss']
 })
-export class GraphComponent implements OnInit, AfterViewInit {
-  @Input('nodes') nodes;
-  @Input('links') links;
+export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
+  private componentDestroyed$: Subject<void> = new Subject<void>();
 
-  graph: ForceDirectedGraph;
-  private _options: { width, height } = { width: '100%', height: '100%' };
+  nodes: Node[];
+  links: Link[];
 
-  @HostListener('window:resize', [ '$event' ])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.graph.initSimulation(this.options);
+    this.graphService.update(this.options);
   }
 
-  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef, private el: ElementRef) {
+  constructor(private ref: ChangeDetectorRef, private el: ElementRef, private graphService: GraphService) {
+    this.nodes = graphService.nodes;
+    this.links = graphService.links;
   }
 
   ngOnInit() {
-    /** Receiving an initialized simulated graph from our custom d3 service */
-    this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options);
-
-    /** Binding change detection check on each tick
-     * This along with an onPush change detection strategy should enforce checking only when relevant!
-     * This improves scripting computation duration in a couple of tests I've made, consistently.
-     * Also, it makes sense to avoid unnecessary checks when we are dealing only with simulations data binding.
-     */
-    this.graph.ticker.subscribe((d) => {
-      this.ref.markForCheck();
-    });
+    this.graphService.createGraph(this.options);
+    this.graphService.ticksSubject$.takeUntil(this.componentDestroyed$).subscribe(() => this.ref.markForCheck());
   }
 
   ngAfterViewInit() {
-    this.graph.initSimulation(this.options);
+    this.graphService.update(this.options);
   }
 
-  get options() {
+  private get options(): GraphOptions {
     const width = this.el.nativeElement.clientWidth;
     const height = this.el.nativeElement.clientHeight;
 
-    return this._options = {
+    return {
       width: width,
       height: height
     };
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
   }
 }

@@ -28,11 +28,11 @@ export class ForceDirectedGraph {
     this._initSimulation(options);
   }
 
-  initNodes() {
+  updateNodes() {
     this.simulation.nodes(this.nodes);
   }
 
-  initLinks() {
+  updateLinks() {
     this.simulation.force('links',
       d3.forceLink(this.links)
         .id(d => d['id'])
@@ -40,7 +40,9 @@ export class ForceDirectedGraph {
     );
   }
 
-  public initSimulation(options: GraphOptions) {
+  public update(options: GraphOptions) {
+    console.log('links init sim', JSON.stringify(this.links));
+
     /** Updating the central force of the simulation */
     this.simulation.force('centers', d3.forceCenter(options.width / 2, options.height / 2));
 
@@ -48,7 +50,13 @@ export class ForceDirectedGraph {
     this.simulation.restart();
   }
 
+  public restart(){
+    this.simulation.restart();
+  }
+
   private _initSimulation(options: GraphOptions) {
+    console.log('before init sim', JSON.stringify(this.links));
+
     /** Creating the simulation */
     this.simulation = d3.forceSimulation()
       .force('charge',
@@ -64,8 +72,8 @@ export class ForceDirectedGraph {
     // Connecting the d3 ticker to an angular event emitter
     this.simulation.on('tick', () => this.ticker.next());
 
-    this.initNodes();
-    this.initLinks();
-    this.initSimulation(options);
+    this.updateNodes();
+    this.updateLinks();
+    this.update(options);
   }
 }

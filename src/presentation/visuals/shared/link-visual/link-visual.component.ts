@@ -13,7 +13,6 @@ import { Link } from '../../../d3';
     >
     </svg:line>
   `
-  // styleUrls: ['./link-visual.component.scss']
 })
 export class LinkVisualComponent {
   @Input('linkVisual') link: Link;
