@@ -25,13 +25,24 @@ export class HomePage implements OnInit, OnDestroy {
         const nodes: Node[] = [];
         const links: Link[] = [];
 
-        nodes.push(new Node(card.id));
+        if (LangUtils.isDefined(card.id)) {
+          // handle persisted card
+          nodes.push(new Node(card.id));
 
-        if (LangUtils.isArray(card.links)) {
-          card.links.forEach(c => {
-            nodes.push(new Node(c.id));
-            links.push(new Link(card.id, c.id));
-          });
+          if (LangUtils.isArray(card.links)) {
+            card.links.forEach(c => {
+              nodes.push(new Node(c.id));
+              links.push(new Link(card.id, c.id));
+            });
+          }
+        } else {
+          // handle new
+          nodes.push(new Node(-1));
+
+          if (LangUtils.isDefined(card.parent)) {
+            // handle branched card (has a parent)
+            links.push(new Link(card.parent.id, -1));
+          }
         }
 
         this.graphService.pushElements(nodes, links);
@@ -46,6 +57,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   saveCard(): void {
     this.cardService.save(this.card);
+    // TODO after save the card has an ID and the graph must be updated
   }
 
   branchCard(): void {
