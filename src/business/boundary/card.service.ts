@@ -237,6 +237,8 @@ export class CardService {
 
   public branchCard(parentCard: CardEntity): Observable<CardEntity> {
     const c = new CardEntity();
+    c.content = '';
+    c.title = '';
 
     // make sure the specified parent was persisted
     if (LangUtils.isDefined(parentCard.id)) {

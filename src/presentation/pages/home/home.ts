@@ -33,8 +33,8 @@ export class HomePage implements OnInit, OnDestroy {
     for (let i = 1; i <= N; i++) {
       for (let m = 2; i * m <= N; m++) {
         /** increasing connections toll on connecting nodes */
-        this.nodes[ getIndex(i) ].linkCount++;
-        this.nodes[ getIndex(i * m) ].linkCount++;
+        this.nodes[getIndex(i)].linkCount++;
+        this.nodes[getIndex(i * m)].linkCount++;
 
         /** connecting the nodes before starting the simulation */
         this.links.push(new Link(i, i * m));
@@ -59,7 +59,10 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   addNewCard(): void {
-    this.editService.cardSelected(new CardEntity());
+    const c = new CardEntity();
+    c.content = '';
+    c.title = '';
+    this.editService.cardSelected(c);
   }
 
   ngOnDestroy(): void {

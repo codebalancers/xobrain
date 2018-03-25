@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as SimpleMDE from 'simplemde';
 import { LangUtils } from '../../../util/lang.utils';
-import { StringUtils } from '../../../util/string.utils';
 
 @Component({
   selector: 'md-editor',
@@ -14,12 +13,7 @@ export class MdEditorComponent implements AfterViewInit {
     this._model = val;
 
     if (LangUtils.isDefined(this.editor)) {
-      if (StringUtils.isBlank(val)) {
-        // setting undefined does not work, we need to provide an empty string
-        this.editor.value('');
-      } else {
-        this.editor.value(val);
-      }
+      this.editor.value(val);
     }
   }
 
