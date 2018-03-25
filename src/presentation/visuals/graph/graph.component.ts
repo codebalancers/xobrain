@@ -19,7 +19,7 @@ import { Subject } from 'rxjs/Subject';
   template: `
     <svg #svg width="100%" height="100%">
       <g [zoomableOf]="svg">
-        <g [linkVisual]="link" *ngFor="let link of _links"></g>
+        <g [linkVisual]="link" *ngFor="let link of links"></g>
         <g [nodeVisual]="node" *ngFor="let node of nodes"
            [draggableNode]="node"></g>
       </g>

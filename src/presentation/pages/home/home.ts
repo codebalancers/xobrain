@@ -5,6 +5,7 @@ import { EditService } from '../../services/edit.service';
 import { CardEntity } from '../../../business/entity/card.entity';
 import { Subject } from 'rxjs/Subject';
 import { GraphService } from '../../services/graph.service';
+import { LangUtils } from '../../../util/lang.utils';
 
 @Component({
   selector: 'page-home',
@@ -21,28 +22,20 @@ export class HomePage implements OnInit, OnDestroy {
       .subscribe((card: CardEntity) => {
         this.card = card;
 
-        this.graphService.pushElements([new Node(44)], [new Link(1, 3)]);
-        // this.links = [];
-        // this.nodes = []
+        const nodes: Node[] = [];
+        const links: Link[] = [];
 
-        // const root = new Node(card.id);
-        // this.nodes.push(root);
-        //
-        // if (LangUtils.isArray(card.links)) {
-        //   card.links.forEach(c => {
-        //     console.log('add link');
-        //     const child = new Node(c.id);
-        //     this.nodes.push(child);
-        //     this.links.push(new Link(root, child));
-        //   });
-        // }
+        nodes.push(new Node(card.id));
+
+        if (LangUtils.isArray(card.links)) {
+          card.links.forEach(c => {
+            nodes.push(new Node(c.id));
+            links.push(new Link(card.id, c.id));
+          });
+        }
+
+        this.graphService.pushElements(nodes, links);
       });
-
-
-    graphService.pushElements(
-      [new Node(1), new Node(2), new Node(3)],
-      [new Link(1, 2)]
-    );
   }
 
   ngOnInit(): void {

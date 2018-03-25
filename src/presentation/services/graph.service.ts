@@ -26,7 +26,7 @@ export class GraphService implements OnDestroy {
       }
     }
 
-    if (LangUtils.isArray(links && links.length > 0)) {
+    if (LangUtils.isArray(links) && links.length > 0) {
       this.links.push(...links);
 
       if (LangUtils.isDefined(this.graph)) {
