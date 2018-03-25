@@ -1,6 +1,5 @@
 <ion-content>
-  <h1>{{card.title}}</h1>
+  <h1>{{card?.title}}</h1>
 
-  {{card.content}}
-  <md-editor [viewMode]="true" [model]="card.content"></md-editor>
+  <md-view [model]="card?.content"></md-view>
 </ion-content>

@@ -47,7 +47,9 @@
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "knex": "^0.14.4",
+    "marked": "^0.3.18",
     "rxjs": "5.5.7",
+    "simplemde": "^1.11.2",
     "sqlite3": "^4.0.0",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.20"
@@ -59,6 +61,7 @@
     "@ionic/app-scripts": "3.1.8",
     "@types/d3": "^5.0.0",
     "@types/knex": "^0.14.9",
+    "@types/marked": "^0.3.0",
     "@types/simplemde": "^1.11.7",
     "concurrently": "^3.5.0",
     "electron": "1.8.4",

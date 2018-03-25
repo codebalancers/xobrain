@@ -3,7 +3,6 @@ import { IonicPage } from 'ionic-angular';
 import { CardEntity } from '../../../business/entity/card.entity';
 import { EditService } from '../../services/edit.service';
 import { Subject } from 'rxjs/Subject';
-import { CardService } from '../../../business/boundary/card.service';
 
 @IonicPage()
 @Component({
@@ -14,7 +13,7 @@ export class CardEditorPage implements OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
   card: CardEntity;
 
-  constructor(editService: EditService, private cardService: CardService) {
+  constructor(editService: EditService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe(card => this.card = card);
