@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 import { EditService } from '../../services/edit.service';
 import { CardEntity } from '../../../business/entity/card.entity';
@@ -9,7 +9,7 @@ import { Subject } from 'rxjs/Subject';
   selector: 'card-view',
   templateUrl: 'card-view.html'
 })
-export class CardViewPage {
+export class CardViewPage implements OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
   card: CardEntity;
 

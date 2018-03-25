@@ -9,4 +9,10 @@ export class CardEntity {
   tags: TagEntity[];
   links: CardEntity[];
   files: FileEntity[];
+
+  /**
+   * transient field, just to remember the information which card was used to branch to
+   * this card on creation of a new card
+   */
+  parent: CardEntity;
 }
