@@ -7,12 +7,15 @@ import { LangUtils } from '../../../util/lang.utils';
   template: '<textarea  #simplemde></textarea>',
 })
 export class MdEditorComponent implements AfterViewInit {
+  /**
+   * only used to store the initial value before editor is ready
+   */
   private _model: string;
 
   @Input() set model(val: string) {
     this._model = val;
 
-    if (LangUtils.isDefined(this.editor)) {
+    if (LangUtils.isDefined(this.editor) && val !== this.editor.value()) {
       this.editor.value(val);
     }
   }
@@ -33,10 +36,10 @@ export class MdEditorComponent implements AfterViewInit {
     });
 
     this.editor.codemirror.on('change', () => {
-      this._model = this.editor.value();
       this.modelChange.emit(this.editor.value());
     });
 
+    // set initial value
     this.editor.value(this._model);
   }
 }
