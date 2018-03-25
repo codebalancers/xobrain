@@ -12,6 +12,8 @@ export class MdViewComponent {
   @Input() set model(val: string) {
     if (StringUtils.isNotBlank(val)) {
       this._model = marked(val, undefined);
+    } else {
+      this._model = null;
     }
   }
 }

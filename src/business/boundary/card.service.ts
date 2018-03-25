@@ -25,6 +25,7 @@ export class CardService {
     console.log('save', card);
 
     if (card.id) {
+      // -- update
       this.dbService
         .getConnection()('card')
         .where('id', '=', card.id)
@@ -33,11 +34,13 @@ export class CardService {
       // TODO: update all links
 
     } else {
+      // -- create
       const qb = this.dbService
         .getConnection()('card')
         .insert({ title: card.title, content: card.content, creationDate: new Date() });
       qb.then(d => console.log(d));
       // TODO: update all links
+      // TODO: set id of original card
     }
 
   }
@@ -66,5 +69,10 @@ export class CardService {
         // TODO fill links
         return cardEntity;
       })
+  }
+
+  public branchCard(card: CardEntity): Observable<CardEntity> {
+    // TODO;
+    return Observable.of(new CardEntity());
   }
 }

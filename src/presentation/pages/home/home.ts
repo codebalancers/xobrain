@@ -53,11 +53,13 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   branchCard(): void {
-
+    this.cardService
+      .branchCard(this.card)
+      .subscribe(newCard => this.editService.cardSelected(newCard));
   }
 
   addNewCard(): void {
-
+    this.editService.cardSelected(new CardEntity());
   }
 
   ngOnDestroy(): void {
