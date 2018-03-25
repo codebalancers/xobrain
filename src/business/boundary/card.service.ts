@@ -16,7 +16,7 @@ export class CardService {
   public getCard(id: number): Observable<CardEntity> {
     return Observable
       .fromPromise(this.dbService.getConnection('card').where('card.id', id))
-      .map(res => {
+      .flatMap(res => {
         const r = ArrayUtils.getFirstElement(res);
         return this.mapCard(r);
       });
@@ -155,7 +155,7 @@ export class CardService {
           const c = new CardEntity();
           c.title = 'My first card';
           c.content = 'Write something...';
-          return c;
+          return Observable.of(c);
         }
 
         return this.mapCard(card, true);
@@ -193,11 +193,12 @@ export class CardService {
       .fromPromise(
         this.dbService.getConnection('card')
           .innerJoin('card_card', 'card_card.card2_id', 'card.id')
-          .where('card.id', cardId)
+          .where('card_card.card1_id', cardId)
       )
-      .map((res: any[]) => {
+      .flatMap((res: any[]) => {
         console.log(res);
-        return res.map(r => this.mapCard(r));
+        const os = res.map(r => this.mapCard(r));
+        return Observable.forkJoin(os);
       });
   }
 

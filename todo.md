@@ -1,6 +1,9 @@
-* links etc on creation etc.
 * connect visualization to data
 * store modification date (instead of creation date) 
+* search form
+* tags form
+* links form
+* uploads
 
 # Resources
 * https://github.com/maximegris/angular-electron
