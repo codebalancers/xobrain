@@ -1,4 +1,4 @@
-# exobrain
+# Xobrain
 
 Contextual desktop wiki using
 

@@ -81,7 +81,7 @@ function exportConfig(): Config {
   return {
     client: 'sqlite3',
     connection: {
-      filename: './exobrain.sqlite'
+      filename: './xobrain.sqlite'
     },
     pool: {
       afterCreate: (conn, cb) => {

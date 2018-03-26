@@ -1,5 +1,5 @@
 {
-  "name": "exobrain",
+  "name": "xobrain",
   "version": "1.0.0",
   "description": "Contextual desktop wiki",
   "author": "Arne Bosien",
@@ -24,9 +24,9 @@
     "runApp": "electron main.js",
     "start": "npm run build.dev && electron main.js",
     "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName='CE' --version-string.FileDescription='CE' --version-string.ProductName='Exobrain'",
+    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName='CE' --version-string.FileDescription='CE' --version-string.ProductName='Xobrain'",
     "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/icon.png --prune=true --out=release-builds",
-    "create-installer-mac": "electron-installer-dmg ./release-builds/exobrain-darwin-x64/exobrain.app exobrain-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
+    "create-installer-mac": "electron-installer-dmg ./release-builds/xobrain-darwin-x64/xobrain.app xobrain-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
     "package-mac-dmg": "npm run package-mac && npm run create-installer-mac"
   },
   "dependencies": {

@@ -1,11 +1,10 @@
 * links form
-* delete nodes with single link
 * refactor CardService#updateLinks: do not delete, but update & never delete links, but their strength to 0.1
 * store modification date (instead of creation date)
 * search form
 * tags form
 * uploads
-* on select of node, highlight children
+* on select of node, highlight children/parents
 
 # Resources
 * https://github.com/maximegris/angular-electron
