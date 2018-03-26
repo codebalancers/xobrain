@@ -239,6 +239,19 @@ export class CardService {
     return t;
   }
 
+  private countAllLinks(cardId: number): Observable<number> {
+    return Observable
+      .fromPromise(
+        this.dbService.getConnection('card_card')
+          .count('card1_id')
+          .where('card1_id', cardId)
+          .or.where('card2_id', cardId)
+      )
+      .map(res => {
+        return res[ 0 ][ 'count(`card1_id`)' ];
+      });
+  }
+
   private getLinks(cardId: number): Observable<CardEntity[]> {
     return Observable
       .fromPromise(
@@ -303,5 +316,37 @@ export class CardService {
     }
 
     return Observable.of(c);
+  }
+
+  public deleteCard(card: CardEntity): Observable<boolean> {
+    return this
+      .countAllLinks(card.id)
+      .flatMap((links: number) => {
+        if (links <= 1) {
+          return this._deleteCard(card).map(() => true);
+        } else {
+          return Observable.of(false);
+        }
+      })
+  }
+
+  private _deleteCard(card: CardEntity): Observable<void> {
+    return Observable
+      .fromPromise(
+        this.dbService
+          .getConnection('card_card')
+          .where('card1_id', card.id).or
+          .where('card2_id', card.id)
+          .del()
+      )
+      .flatMap(res => {
+        return Observable
+          .fromPromise(
+            this.dbService
+              .getConnection('card')
+              .where('id', card.id)
+              .del()
+          );
+      })
   }
 }

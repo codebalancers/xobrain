@@ -4,6 +4,7 @@ import { LangUtils } from '../../util/lang.utils';
 import { GraphOptions } from '../d3/models';
 import { Subject } from 'rxjs/Subject';
 import { ArrayUtils } from '../../util/array.utils';
+import { LinkUtils } from '../../util/link.utils';
 
 
 @Injectable()
@@ -34,7 +35,7 @@ export class GraphService implements OnDestroy {
     if (LangUtils.isArray(links) && links.length > 0) {
       ArrayUtils.pushIfNotPresent(
         this.links,
-        (add, elem) => add.source === elem.source && add.target === elem.target,
+        (add, elem) => LinkUtils.equals(add, elem),
         ...links
       );
 
@@ -65,10 +66,15 @@ export class GraphService implements OnDestroy {
     this.links.filter(l => l.source === oldId).forEach(l => l.source = newId);
     this.links.filter(l => l.target === oldId).forEach(l => l.target = newId);
 
+    this._updateAll()
+  }
+
+  private _updateAll() {
     if (LangUtils.isDefined(this.graph)) {
       this.graph.updateNodes();
       this.graph.updateLinks();
       this.graph.restart();
+      this.refresh();
     }
   }
 
@@ -78,5 +84,21 @@ export class GraphService implements OnDestroy {
 
   public getNode(cardId: number): Node {
     return this.nodes.find(n => n.card.id === cardId);
+  }
+
+  public removeNode(cardId: number): void {
+    // -- remove node
+    const node = this.nodes.find(n => n.card.id === cardId);
+    ArrayUtils.removeElement(this.nodes, node);
+
+    // -- remove links to to/from node
+    console.log('##', this.links);
+    console.log('##', this.links.length);
+    this.links
+      .filter(l => LinkUtils.involves(cardId, l))
+      .forEach(l => ArrayUtils.removeElement(this.links, l));
+    console.log('##', this.links.length);
+
+    this._updateAll();
   }
 }

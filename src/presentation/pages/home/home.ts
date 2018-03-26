@@ -6,6 +6,7 @@ import { CardEntity } from '../../../business/entity/card.entity';
 import { Subject } from 'rxjs/Subject';
 import { GraphService } from '../../services/graph.service';
 import { LangUtils } from '../../../util/lang.utils';
+import { ArrayUtils } from '../../../util/array.utils';
 
 @Component({
   selector: 'page-home',
@@ -92,5 +93,34 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed$.next();
     this.componentDestroyed$.complete();
+  }
+
+  public deleteCard(): void {
+    this.cardService
+      .deleteCard(this.card)
+      .subscribe(success => {
+        if (success === true) {
+          // delete node from graph
+          this.graphService.removeNode(this.card.id);
+
+          // -- delete all references from links to deleted card
+          this.graphService.nodes.forEach(n => {
+            n.card.links
+              .filter(l => l.id === this.card.id)
+              .forEach(l => ArrayUtils.removeElement(n.card.links, l));
+
+            if (LangUtils.isDefined(n.card.parent) && n.card.parent.id === this.card.id) {
+              n.card.parent = null;
+            }
+          });
+
+          // -- set card to editor
+          this.cardService
+            .getInitialCard()
+            .subscribe(card => this.editService.cardSelected(card));
+        } else {
+          console.log('could not delete card')
+        }
+      });
   }
 }
