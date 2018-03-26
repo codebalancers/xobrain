@@ -62,19 +62,11 @@ export class GraphService implements OnDestroy {
     this._ticksSubject.complete();
   }
 
-  public updateLinks(oldId: number, newId: number): void {
-    this.links.filter(l => l.source === oldId).forEach(l => l.source = newId);
-    this.links.filter(l => l.target === oldId).forEach(l => l.target = newId);
-
-    this._updateAll()
-  }
-
   private _updateAll() {
     if (LangUtils.isDefined(this.graph)) {
       this.graph.updateNodes();
       this.graph.updateLinks();
       this.graph.restart();
-      this.refresh();
     }
   }
 
@@ -92,13 +84,14 @@ export class GraphService implements OnDestroy {
     ArrayUtils.removeElement(this.nodes, node);
 
     // -- remove links to to/from node
-    console.log('##', this.links);
-    console.log('##', this.links.length);
     this.links
       .filter(l => LinkUtils.involves(cardId, l))
       .forEach(l => ArrayUtils.removeElement(this.links, l));
-    console.log('##', this.links.length);
 
     this._updateAll();
+
+    setTimeout(() => {
+      this.refresh();
+    });
   }
 }

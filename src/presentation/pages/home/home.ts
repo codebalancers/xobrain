@@ -69,7 +69,7 @@ export class HomePage implements OnInit, OnDestroy {
       .subscribe(() => {
         // save operation persisted new entity with auto-incremented id
         if (oldId !== this.card.id) {
-          this.graphService.updateLinks(oldId, this.card.id);
+          this.graphService.refresh();
         } else {
           this.graphService.refresh();
         }
