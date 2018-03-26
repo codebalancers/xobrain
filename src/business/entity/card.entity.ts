@@ -6,9 +6,9 @@ export class CardEntity {
   creationDate: Date;
   title: string;
   content: string;
-  tags: TagEntity[];
-  links: CardEntity[];
-  files: FileEntity[];
+  tags: TagEntity[] = [];
+  links: CardEntity[] = [];
+  files: FileEntity[] = [];
 
   /**
    * transient field, just to remember the information which card was used to branch to
