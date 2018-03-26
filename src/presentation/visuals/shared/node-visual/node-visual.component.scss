@@ -8,6 +8,16 @@
   stroke-width: 0.25;
 }
 
+.selected {
+  cursor: pointer;
+  transition: stroke-width 0.1s ease-out,
+  fill 0.1s ease-out,
+  stroke 0.1s ease-out;
+
+  stroke: red;
+  stroke-width: 1.25;
+}
+
 .node-name {
   font-family: sans-serif;
   text-anchor: middle;

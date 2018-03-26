@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Node } from '../../../d3';
 import { EditService } from '../../../services/edit.service';
+import { Subject } from 'rxjs/Subject';
+import { CardEntity } from '../../../../business/entity/card.entity';
 
 @Component({
   selector: '[nodeVisual]',
@@ -8,6 +10,7 @@ import { EditService } from '../../../services/edit.service';
     <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'" (click)="handleClick()">
       <svg:circle
         class="node"
+        [ngClass]="{'node': !selected, 'selected': selected}"
         [attr.fill]="node.color"
         cx="0"
         cy="0"
@@ -21,12 +24,27 @@ import { EditService } from '../../../services/edit.service';
     </svg:g>
   `
 })
-export class NodeVisualComponent {
+export class NodeVisualComponent implements OnInit, OnDestroy {
+  private componentDestroyed$: Subject<void> = new Subject<void>();
+  selected: boolean = false;
+
   @Input('nodeVisual') node: Node;
 
-  constructor(private editService: EditService){}
+  constructor(private editService: EditService) {
+  }
 
-  handleClick(){
+  ngOnInit() {
+    this.editService.cardSelectedSubject$
+      .takeUntil(this.componentDestroyed$)
+      .subscribe((card: CardEntity) => this.selected = card.id === this.node.card.id);
+  }
+
+  handleClick() {
     this.editService.cardSelected(this.node.card)
+  }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
   }
 }
