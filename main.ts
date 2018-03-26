@@ -83,6 +83,11 @@ function exportConfig(): Config {
     connection: {
       filename: './exobrain.sqlite'
     },
+    pool: {
+      afterCreate: (conn, cb) => {
+        conn.run('PRAGMA foreign_keys = ON', cb);
+      }
+    },
     debug: true
   };
 }

@@ -32,6 +32,10 @@ export class CardService {
   }
 
   public updateChildren(card: CardEntity): Observable<CardEntity> {
+    if (card.id < 1) {
+      return Observable.of(card);
+    }
+
     return this
       .getLinks(card.id)
       .map(links => {
@@ -49,7 +53,7 @@ export class CardService {
       });
   }
 
-  public save(card: CardEntity): Observable<void> {
+  public save(card: CardEntity): Observable<CardEntity> {
     console.log('save', card);
 
     if (card.id > 0) {
@@ -61,8 +65,8 @@ export class CardService {
             .where('id', '=', card.id)
             .update({ title: card.title, content: card.content })
         )
-        .map(d => this.updateReferences(card));
-
+        .map(d => this.updateReferences(card))
+        .map(() => card);
     } else {
       // -- create
       return Observable
@@ -85,7 +89,8 @@ export class CardService {
           }
 
           this.updateReferences(card);
-        });
+        })
+        .map(() => card);
     }
   }
 
@@ -205,7 +210,8 @@ export class CardService {
           const c = new CardEntity();
           c.title = 'My first card';
           c.content = 'Write something...';
-          return Observable.of(c);
+
+          return this.save(c);
         }
 
         console.log('getInitialCard', card);
