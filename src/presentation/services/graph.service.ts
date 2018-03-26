@@ -73,7 +73,7 @@ export class GraphService implements OnDestroy {
   }
 
   public refresh(): void {
-    this.graph.restart();
+    this._ticksSubject.next();
   }
 
   public getNode(cardId: number): Node {
