@@ -52,6 +52,9 @@ export class CardService {
           // create link from parent
           if (LangUtils.isDefined(card.parent)) {
             this.createLink(card.parent, card);
+
+            // update the parent card so it know about its child
+            card.parent.links.push(card);
           }
 
           this.updateReferences(card);
@@ -88,7 +91,7 @@ export class CardService {
           .where('card1_id', from.id)
           .del()
       )
-      .map(d => {
+      .flatMap(d => {
         console.log(d);
 
         const data = to.map(ce => {
@@ -99,8 +102,8 @@ export class CardService {
           return Observable.of(null);
         }
 
-        Observable.fromPromise(this.dbService
-          .getConnection('card')
+        return Observable.fromPromise(this.dbService
+          .getConnection('card_card')
           .insert(data)
         );
       })
