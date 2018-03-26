@@ -32,7 +32,7 @@ export class CardService {
           this.dbService
             .getConnection('card')
             .where('id', '=', card.id)
-            .update({title: card.title, content: card.content})
+            .update({ title: card.title, content: card.content })
         )
         .map(d => this.updateReferences(card));
 
@@ -42,12 +42,12 @@ export class CardService {
         .fromPromise(
           this.dbService
             .getConnection('card')
-            .insert({title: card.title, content: card.content, creationDate: new Date()})
+            .insert({ title: card.title, content: card.content, creationDate: new Date() })
             .returning('id')
         )
         .map(d => {
           // set auto-generated id
-          card.id = d[0];
+          card.id = d[ 0 ];
 
           // create link from parent
           if (LangUtils.isDefined(card.parent)) {
@@ -76,27 +76,35 @@ export class CardService {
   private createLink(from: CardEntity, to: CardEntity) {
     this.dbService
       .getConnection('card_card')
-      .insert({card1_id: from.id, card2_id: to.id, creationDate: new Date()})
+      .insert({ card1_id: from.id, card2_id: to.id, creationDate: new Date() })
       .then(d => console.log(d));
   }
 
   private updateLinks(from: CardEntity, to: CardEntity[]) {
-    this.dbService
-      .getConnection('card_card')
-      .where('card1_id', from.id)
-      .del()
-      .then(d => {
+    Observable
+      .fromPromise(
+        this.dbService
+          .getConnection('card_card')
+          .where('card1_id', from.id)
+          .del()
+      )
+      .map(d => {
         console.log(d);
 
         const data = to.map(ce => {
-          return {card1_id: from.id, card2_id: ce.id, creationDate: new Date()};
+          return { card1_id: from.id, card2_id: ce.id, creationDate: new Date() };
         });
 
-        return this.dbService
+        if (data.length === 0) {
+          return Observable.of(null);
+        }
+
+        Observable.fromPromise(this.dbService
           .getConnection('card')
-          .insert(data);
+          .insert(data)
+        );
       })
-      .then(d => console.log(d));
+      .subscribe(d => console.log(d));
   }
 
   private updateTags(card: CardEntity, tags: TagEntity[]) {
@@ -120,8 +128,12 @@ export class CardService {
 
         // -- create new links between card and tags
         const data = tags.map(tag => {
-          return {card_id: card.id, tag_id: tag.id, creationDate: new Date()};
+          return { card_id: card.id, tag_id: tag.id, creationDate: new Date() };
         });
+
+        if (data.length === 0) {
+          return Observable.of(null);
+        }
 
         return Observable.fromPromise(this.dbService
           .getConnection('card_tag')
@@ -135,16 +147,16 @@ export class CardService {
       .fromPromise(
         this.dbService
           .getConnection('tag')
-          .insert({name: tag.name, creationDate: new Date()})
+          .insert({ name: tag.name, creationDate: new Date() })
           .returning('id')
       )
       .map(d => {
-        tag.id = d[0];
+        tag.id = d[ 0 ];
         return null;
       });
   }
 
-  private updateFiles(card: CardEntity, file: FileEntity[]) {
+  private updateFiles(card: CardEntity, files: FileEntity[]) {
     console.error('NOT YET IMPLEMENTED');
   }
 
@@ -245,7 +257,7 @@ export class CardService {
     });
 
     return Observable
-      .forkJoin([filesO, tagsO, linksO])
+      .forkJoin([ filesO, tagsO, linksO ])
       .map(res => cardEntity);
   }
 

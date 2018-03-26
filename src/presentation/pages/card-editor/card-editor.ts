@@ -17,7 +17,6 @@ export class CardEditorPage implements OnDestroy {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe(card => {
-        console.log('got car', card)
         return this.card = card;
       });
   }

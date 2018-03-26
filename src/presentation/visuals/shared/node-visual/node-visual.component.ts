@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { Node } from '../../../d3';
+import { EditService } from '../../../services/edit.service';
 
 @Component({
   selector: '[nodeVisual]',
   template: `
-    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
+    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'" (click)="handleClick()">
       <svg:circle
         class="node"
         [attr.fill]="node.color"
@@ -22,4 +23,10 @@ import { Node } from '../../../d3';
 })
 export class NodeVisualComponent {
   @Input('nodeVisual') node: Node;
+
+  constructor(private editService: EditService){}
+
+  handleClick(){
+    this.editService.cardSelected(this.node.card)
+  }
 }

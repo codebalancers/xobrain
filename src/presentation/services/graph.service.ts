@@ -3,6 +3,7 @@ import { D3Service, ForceDirectedGraph, Link, Node } from '../d3';
 import { LangUtils } from '../../util/lang.utils';
 import { GraphOptions } from '../d3/models';
 import { Subject } from 'rxjs/Subject';
+import { ArrayUtils } from '../../util/array.utils';
 
 
 @Injectable()
@@ -19,7 +20,11 @@ export class GraphService implements OnDestroy {
 
   public pushElements(nodes: Node[], links?: Link[]) {
     if (LangUtils.isArray(nodes) && nodes.length > 0) {
-      this.nodes.push(...nodes);
+      ArrayUtils.pushIfNotPresent(
+        this.nodes,
+        (add, elem) => elem.card.id === add.card.id,
+        ...nodes
+      );
 
       if (LangUtils.isDefined(this.graph)) {
         this.graph.updateNodes();
@@ -27,7 +32,11 @@ export class GraphService implements OnDestroy {
     }
 
     if (LangUtils.isArray(links) && links.length > 0) {
-      this.links.push(...links);
+      ArrayUtils.pushIfNotPresent(
+        this.links,
+        (add, elem) => add.source === elem.source && add.target === elem.target,
+        ...links
+      );
 
       if (LangUtils.isDefined(this.graph)) {
         this.graph.updateLinks();

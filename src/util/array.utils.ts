@@ -43,13 +43,13 @@ export class ArrayUtils {
 
   public static getFirstElement<T>(array: T[]): T {
     if (LangUtils.isDefined(array) && array.length > 0) {
-      return array[0];
+      return array[ 0 ];
     }
   }
 
   public static getLastElement<T>(array: T[]): T {
     if (LangUtils.isDefined(array) && array.length > 0) {
-      return array[array.length - 1];
+      return array[ array.length - 1 ];
     }
   }
 
@@ -57,15 +57,37 @@ export class ArrayUtils {
     if (LangUtils.isDefined(array) && array.length > 0) {
       if (infinite === true) {
         if (index < 0) {
-          return array[index % array.length + array.length];
+          return array[ index % array.length + array.length ];
         } else {
-          return array[index % array.length];
+          return array[ index % array.length ];
         }
       }
 
       if (index >= 0 && index < array.length) {
-        return array[index];
+        return array[ index ];
       }
     }
+  }
+
+  public static pushIfNotPresent<T>(array: T[],
+                                    predicate: (addValue: T, arrayElem: T) => boolean,
+                                    ...elems: T[]): void {
+    if (LangUtils.isUndefined(array)) {
+      return;
+    }
+
+    elems.forEach(elem => {
+      let existing;
+
+      if (LangUtils.isUndefined(predicate)) {
+        existing = array.find(e => e === elem);
+      } else {
+        existing = array.find(e => predicate(elem, e));
+      }
+
+      if (LangUtils.isUndefined(existing)) {
+        array.push(elem);
+      }
+    });
   }
 }
