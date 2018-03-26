@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 
 const FORCES = {
   LINKS: 1 / 50,
-  COLLISION: 1,
+  COLLISION: 0.7,
   CHARGE: -1
 };
 
@@ -57,11 +57,12 @@ export class ForceDirectedGraph {
     this.simulation = d3.forceSimulation()
       .force('charge',
         d3.forceManyBody()
-          .strength(d => FORCES.CHARGE * d['r'])
+          // .strength(d => FORCES.CHARGE * d['r'])
       )
       .force('collide',
         d3.forceCollide()
           .strength(FORCES.COLLISION)
+          .iterations(70)
           .radius(d => d['r'] + 5).iterations(2)
       );
 

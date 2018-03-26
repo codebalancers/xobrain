@@ -13,6 +13,15 @@ export class CardService {
   constructor(private dbService: DatabaseService) {
   }
 
+  public updateChildren(card: CardEntity): Observable<CardEntity> {
+    return this
+      .getLinks(card.id)
+      .map(links => {
+        card.links = links;
+        return card;
+      });
+  }
+
   public getCard(id: number): Observable<CardEntity> {
     return Observable
       .fromPromise(this.dbService.getConnection('card').where('card.id', id))

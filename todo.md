@@ -4,9 +4,7 @@
 * tags form
 * links form
 * uploads
-* if child was created, the parent entity must be updated, because otherwise it does not know, 
-  that a link was added. maybe the best would be to remove the "links" property from CardEntity
-  - or maybe not?
+* on select of node, select all children
 
 # Resources
 * https://github.com/maximegris/angular-electron
