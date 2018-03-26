@@ -38,11 +38,16 @@ export class HomePage implements OnInit, OnDestroy {
         } else {
           // handle new
           console.log(card);
-          nodes.push(new Node(card));
+          const nc = new Node(card);
+          nodes.push(nc);
 
           if (LangUtils.isDefined(card.parent)) {
             // handle branched card (has a parent)
             links.push(new Link(card.parent.id, card.id));
+
+            const parentNode = this.graphService.getNode(card.parent.id);
+            nc.x = parentNode.x;
+            nc.y = parentNode.y;
           }
         }
 

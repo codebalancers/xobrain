@@ -75,4 +75,8 @@ export class GraphService implements OnDestroy {
   public refresh(): void {
     this.graph.restart();
   }
+
+  public getNode(cardId: number): Node {
+    return this.nodes.find(n => n.card.id === cardId);
+  }
 }
