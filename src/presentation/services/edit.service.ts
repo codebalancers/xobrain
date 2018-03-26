@@ -22,21 +22,41 @@ export class EditService implements OnDestroy {
 
     this.cardService
       .updateChildren(card)
-      .subscribe(c => {
-        console.log(c);
+      .subscribe(card => {
         const nodes: Node[] = [];
         const links: Link[] = [];
 
         const parentNode = this.graphService.getNode(card.id);
 
-        c.links.forEach(l => {
+        card.links.forEach(l => {
           const nc = new Node(l);
           nodes.push(nc);
 
           nc.x = parentNode.x;
           nc.y = parentNode.y;
 
-          links.push(new Link(c.id, l.id));
+          links.push(new Link(card.id, l.id));
+        });
+
+        this.graphService.pushElements(nodes, links);
+      });
+
+    this.cardService
+      .findParents(card)
+      .subscribe(cards => {
+        const nodes: Node[] = [];
+        const links: Link[] = [];
+
+        const childNode = this.graphService.getNode(card.id);
+
+        cards.forEach(l => {
+          const np = new Node(l);
+          nodes.push(np);
+
+          np.x = childNode.x;
+          np.y = childNode.y;
+
+          links.push(new Link(l.id, card.id));
         });
 
         this.graphService.pushElements(nodes, links);
