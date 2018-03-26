@@ -42,13 +42,13 @@ const mainMenuTemplate: MenuItemConstructorOptions[] = [
   {
     label: 'Edit',
     submenu: [
-      { label: 'Undo', accelerator: 'CmdOrCtrl+Z', selector: 'undo:' },
-      { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z', selector: 'redo:' },
+      { label: 'Undo', accelerator: 'CmdOrCtrl+Z' as Accelerator },
+      { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z' as Accelerator },
       { type: 'separator' },
-      { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
-      { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
+      { label: 'Cut', accelerator: 'CmdOrCtrl+X' as Accelerator },
+      { label: 'Copy', accelerator: 'CmdOrCtrl+C' as Accelerator },
+      { label: 'Paste', accelerator: 'CmdOrCtrl+V' as Accelerator },
+      { label: 'Select All', accelerator: 'CmdOrCtrl+A' as Accelerator }
     ]
   }
 ];
