@@ -55,8 +55,11 @@ export class HomePage implements OnInit, OnDestroy {
     this.cardService
       .save(this.card)
       .subscribe((card) => {
+        // publish the new state of the card (now should not be modified anymore)
         this.editService.emitModified(card.modified);
-        this.updateCard(card);
+
+        // before the card was saved, new links or removed links where not shown in the graph
+        this.recreateLinks(card);
       });
   }
 
@@ -84,10 +87,13 @@ export class HomePage implements OnInit, OnDestroy {
       .deleteCard(this.card)
       .subscribe(success => {
         if (success === true) {
-          // delete node from graph
+          // delete node and all involved links from graph
           this.graphService.removeNode(this.card.id);
 
-          // -- delete all references from links to deleted card
+          /**
+           * delete all references from links to the deleted card that are still present in the CardEntities which have
+           * not been reloaded
+           */
           this.graphService.nodes.forEach(n => {
             n.card.links
               .filter(l => l.id === this.card.id)
@@ -98,7 +104,9 @@ export class HomePage implements OnInit, OnDestroy {
             }
           });
 
-          // -- set card to editor
+          /**
+           * Since the previous selected card was just removed, the initial card is selected again.
+           */
           this.cardService
             .getInitialCard()
             .subscribe(card => this.editService.cardSelected(card));
@@ -108,12 +116,17 @@ export class HomePage implements OnInit, OnDestroy {
       });
   }
 
-  private updateCard(card: CardEntity) {
+  private recreateLinks(card: CardEntity) {
     this.graphService.removeLinksOfNode(card.id);
     this.createLinksForCard(this.card);
     this.graphService.refresh();
   }
 
+  /**
+   * Create all links of a card and also adds the required nodes to the graph, the links are pointing to.
+   *
+   * @param {CardEntity} card
+   */
   private createLinksForCard(card: CardEntity): void {
     const nodes: Node[] = [];
     const links: Link[] = [];
@@ -132,6 +145,7 @@ export class HomePage implements OnInit, OnDestroy {
       // handle branched card (has a parent)
       links.push(new Link(card.parent.id, card.id));
 
+      // a new card shall be placed near the parent card
       const parentNode = this.graphService.getNode(card.parent.id);
       nc.x = parentNode.x;
       nc.y = parentNode.y;
