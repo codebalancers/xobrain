@@ -49,7 +49,10 @@ export class HomePage implements OnInit, OnDestroy {
   saveCard(): void {
     this.cardService
       .save(this.card)
-      .subscribe((card) => this.updateCard(card));
+      .subscribe((card) => {
+        this.editService.emitModified(card.modified);
+        this.updateCard(card);
+      });
   }
 
   branchCard(): void {

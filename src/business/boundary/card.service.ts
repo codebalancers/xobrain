@@ -72,7 +72,10 @@ export class CardService {
             .update({ title: card.title, content: card.content, modificationDate: new Date() })
         )
         .map(d => this.updateReferences(card))
-        .map(() => card);
+        .map(() => {
+          card.modified = false;
+          return card;
+        });
     } else {
       // -- create
       return Observable
@@ -96,7 +99,10 @@ export class CardService {
 
           this.updateReferences(card);
         })
-        .map(() => card);
+        .map(() => {
+          card.modified = false;
+          return card;
+        });
     }
   }
 
@@ -131,6 +137,7 @@ export class CardService {
           const c = new CardEntity();
           c.title = 'My first card';
           c.content = 'Write something...';
+          c.modified = true;
 
           return this.save(c);
         }
@@ -176,6 +183,7 @@ export class CardService {
     c.id = -1;
     c.content = '';
     c.title = '';
+    c.modified = true;
 
     // make sure the specified parent was persisted
     if (LangUtils.isDefined(parentCard.id)) {

@@ -9,6 +9,7 @@ export class CardMapper {
     cardEntity.id = card.id;
     cardEntity.title = card.title;
     cardEntity.content = card.content;
+    cardEntity.modified = false;
 
     return cardEntity;
   }
