@@ -45,7 +45,14 @@ export class TagService {
       });
   }
 
-  public updateTags(card: CardEntity, tags: TagEntity[]) {
+  /**
+   * Store/update the specified tags for the specified card.
+   *
+   * @param {CardEntity} card
+   * @param {TagEntity[]} tags
+   * @return {Observable<void>}
+   */
+  public updateTags(card: CardEntity, tags: TagEntity[]): Observable<void> {
     // -- ensure all tag entities are present
     const queries = tags
       .filter(t => LangUtils.isUndefined(t.id))
@@ -59,7 +66,7 @@ export class TagService {
         .del())
     );
 
-    Observable
+    return Observable
       .forkJoin(queries)
       .flatMap(r => {
         console.log(r);
@@ -76,7 +83,6 @@ export class TagService {
         return Observable.fromPromise(this.dbService
           .getConnection('card_tag')
           .insert(data));
-      })
-      .subscribe(r => console.log(r));
+      });
   }
 }

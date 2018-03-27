@@ -5,6 +5,9 @@
 * uploads
 * on select of node, highlight children/parents
 
+# Future
+* DB migrations
+
 # Resources
 * https://github.com/maximegris/angular-electron
 * https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/

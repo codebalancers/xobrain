@@ -71,7 +71,7 @@ export class CardService {
             .where('id', '=', card.id)
             .update({ title: card.title, content: card.content, modificationDate: new Date() })
         )
-        .map(d => this.updateReferences(card))
+        .flatMap(d => this.updateReferences(card))
         .map(() => {
           card.modified = false;
           return card;
@@ -85,7 +85,7 @@ export class CardService {
             .insert({ title: card.title, content: card.content, modificationDate: new Date() })
             .returning('id')
         )
-        .map(d => {
+        .flatMap(d => {
           // set auto-generated id
           card.id = d[ 0 ];
 
@@ -97,7 +97,7 @@ export class CardService {
             card.parent.links.push(card);
           }
 
-          this.updateReferences(card);
+          return this.updateReferences(card);
         })
         .map(() => {
           card.modified = false;
@@ -106,19 +106,33 @@ export class CardService {
     }
   }
 
-  private updateReferences(card: CardEntity): void {
+  private updateReferences(card: CardEntity): Observable<void> {
+    const os: Observable<void>[] = [];
+
     if (LangUtils.isArray(card.links)) {
-      this.linkService.updateLinks(card, card.links.map(l => {
-        return { card: l, weight: 1.0 };
-      }));
+      os.push(
+        this.linkService.updateLinks(card, card.links.map(l => {
+          return { card: l, weight: 1.0 };
+        }))
+      );
     }
 
     if (LangUtils.isArray(card.tags)) {
-      this.tagService.updateTags(card, card.tags);
+      os.push(
+        this.tagService.updateTags(card, card.tags)
+      );
     }
 
     if (LangUtils.isArray(card.files)) {
-      this.fileService.updateFiles(card, card.files);
+      os.push(
+        this.fileService.updateFiles(card, card.files)
+      );
+    }
+
+    if (os.length > 0) {
+      return Observable.forkJoin(os).map(() => null);
+    } else {
+      return Observable.of(null);
     }
   }
 

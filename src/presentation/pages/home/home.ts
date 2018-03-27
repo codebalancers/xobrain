@@ -23,7 +23,7 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(titleService: Title,
               private cardService: CardService,
               private editService: EditService,
-              private keyService: KeyService,
+              keyService: KeyService,
               private graphService: GraphService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)

@@ -18,8 +18,15 @@ export class LinkService {
       .then(d => console.log(d));
   }
 
-  public updateLinks(from: CardEntity, to: { card: CardEntity, weight: number }[]) {
-    Observable
+  /**
+   * Store/update the specified links for the specified card.
+   *
+   * @param {CardEntity} from
+   * @param {{card: CardEntity; weight: number}[]} to
+   * @return {Observable<void>}
+   */
+  public updateLinks(from: CardEntity, to: { card: CardEntity, weight: number }[]): Observable<void> {
+    return Observable
       .fromPromise(
         this.dbService
           .getConnection('card_card')
@@ -46,8 +53,7 @@ export class LinkService {
           .getConnection('card_card')
           .insert(data)
         );
-      })
-      .subscribe(d => console.log(d));
+      });
   }
 
   public getLinks(cardId: number): Observable<CardEntity[]> {

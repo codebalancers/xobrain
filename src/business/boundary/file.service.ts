@@ -14,7 +14,8 @@ export class FileService {
     return Observable.of(null);
   }
 
-  public updateFiles(card: CardEntity, files: FileEntity[]) {
+  public updateFiles(card: CardEntity, files: FileEntity[]): Observable<void> {
     console.error('NOT YET IMPLEMENTED');
+    return Observable.of(null);
   }
 }
