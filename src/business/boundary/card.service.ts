@@ -69,7 +69,7 @@ export class CardService {
           this.dbService
             .getConnection('card')
             .where('id', '=', card.id)
-            .update({ title: card.title, content: card.content })
+            .update({ title: card.title, content: card.content, modificationDate: new Date() })
         )
         .map(d => this.updateReferences(card))
         .map(() => card);
@@ -102,7 +102,9 @@ export class CardService {
 
   private updateReferences(card: CardEntity): void {
     if (LangUtils.isArray(card.links)) {
-      this.linkService.updateLinks(card, card.links);
+      this.linkService.updateLinks(card, card.links.map(l => {
+        return { card: l, weight: 1.0 };
+      }));
     }
 
     if (LangUtils.isArray(card.tags)) {
@@ -113,7 +115,6 @@ export class CardService {
       this.fileService.updateFiles(card, card.files);
     }
   }
-
 
   public getInitialCard(): Observable<CardEntity> {
     const p = this.dbService

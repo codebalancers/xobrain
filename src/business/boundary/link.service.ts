@@ -14,11 +14,11 @@ export class LinkService {
   public createLink(from: CardEntity, to: CardEntity) {
     this.dbService
       .getConnection('card_card')
-      .insert({ card1_id: from.id, card2_id: to.id, modificationDate: new Date() })
+      .insert({ card1_id: from.id, card2_id: to.id, modificationDate: new Date(), weight: 1.0 })
       .then(d => console.log(d));
   }
 
-  public updateLinks(from: CardEntity, to: CardEntity[]) {
+  public updateLinks(from: CardEntity, to: { card: CardEntity, weight: number }[]) {
     Observable
       .fromPromise(
         this.dbService
@@ -29,8 +29,13 @@ export class LinkService {
       .flatMap(d => {
         console.log(d);
 
-        const data = to.map(ce => {
-          return { card1_id: from.id, card2_id: ce.id, modificationDate: new Date() };
+        const data = to.map(entry => {
+          return {
+            card1_id: from.id,
+            card2_id: entry.card.id,
+            modificationDate: new Date(),
+            weight: entry.weight
+          };
         });
 
         if (data.length === 0) {
