@@ -4,14 +4,19 @@ import { Observable } from 'rxjs/Observable';
 import { DatabaseService } from '../control/database.service';
 import { ArrayUtils } from '../../util/array.utils';
 import { LangUtils } from '../../util/lang.utils';
-import { TagEntity } from '../entity/tag.entity';
-import { FileEntity } from '../entity/file.entity';
 import { LinkService } from './link.service';
+import { TagService } from './tag.service';
+import { FileService } from './file.service';
+import { CardMapper } from './card.mapper';
 
 @Injectable()
 export class CardService {
 
-  constructor(private dbService: DatabaseService, private linkService: LinkService) {
+  constructor(private dbService: DatabaseService,
+              private cardMapper: CardMapper,
+              private linkService: LinkService,
+              private tagService: TagService,
+              private fileService: FileService) {
   }
 
   public findParents(card: CardEntity): Observable<CardEntity[]> {
@@ -37,7 +42,7 @@ export class CardService {
       return Observable.of(card);
     }
 
-    return this
+    return this.linkService
       .getLinks(card.id)
       .map(links => {
         card.links = links;
@@ -83,7 +88,7 @@ export class CardService {
 
           // create link from parent
           if (LangUtils.isDefined(card.parent)) {
-            this.createLink(card.parent, card);
+            this.linkService.createLink(card.parent, card);
 
             // update the parent card so it know about its child
             card.parent.links.push(card);
@@ -97,104 +102,18 @@ export class CardService {
 
   private updateReferences(card: CardEntity): void {
     if (LangUtils.isArray(card.links)) {
-      this.updateLinks(card, card.links);
+      this.linkService.updateLinks(card, card.links);
     }
 
     if (LangUtils.isArray(card.tags)) {
-      this.updateTags(card, card.tags);
+      this.tagService.updateTags(card, card.tags);
     }
 
     if (LangUtils.isArray(card.files)) {
-      this.updateFiles(card, card.files);
+      this.fileService.updateFiles(card, card.files);
     }
   }
 
-  private createLink(from: CardEntity, to: CardEntity) {
-    this.dbService
-      .getConnection('card_card')
-      .insert({ card1_id: from.id, card2_id: to.id, modificationDate: new Date() })
-      .then(d => console.log(d));
-  }
-
-  private updateLinks(from: CardEntity, to: CardEntity[]) {
-    Observable
-      .fromPromise(
-        this.dbService
-          .getConnection('card_card')
-          .where('card1_id', from.id)
-          .del()
-      )
-      .flatMap(d => {
-        console.log(d);
-
-        const data = to.map(ce => {
-          return { card1_id: from.id, card2_id: ce.id, modificationDate: new Date() };
-        });
-
-        if (data.length === 0) {
-          return Observable.of(null);
-        }
-
-        return Observable.fromPromise(this.dbService
-          .getConnection('card_card')
-          .insert(data)
-        );
-      })
-      .subscribe(d => console.log(d));
-  }
-
-  private updateTags(card: CardEntity, tags: TagEntity[]) {
-    // -- ensure all tag entities are present
-    const queries = tags
-      .filter(t => LangUtils.isUndefined(t.id))
-      .map(t => this.createTag(t));
-
-    // -- delete all old connections for the specified card
-    queries.push(
-      Observable.fromPromise(this.dbService
-        .getConnection('card_tag')
-        .where('card_id', card.id)
-        .del())
-    );
-
-    Observable
-      .forkJoin(queries)
-      .flatMap(r => {
-        console.log(r);
-
-        // -- create new links between card and tags
-        const data = tags.map(tag => {
-          return { card_id: card.id, tag_id: tag.id, modificationDate: new Date() };
-        });
-
-        if (data.length === 0) {
-          return Observable.of(null);
-        }
-
-        return Observable.fromPromise(this.dbService
-          .getConnection('card_tag')
-          .insert(data));
-      })
-      .subscribe(r => console.log(r));
-  }
-
-  private createTag(tag: TagEntity): Observable<void> {
-    return Observable
-      .fromPromise(
-        this.dbService
-          .getConnection('tag')
-          .insert({ name: tag.name, modificationDate: new Date() })
-          .returning('id')
-      )
-      .map(d => {
-        tag.id = d[ 0 ];
-        return null;
-      });
-  }
-
-  private updateFiles(card: CardEntity, files: FileEntity[]) {
-    console.error('NOT YET IMPLEMENTED');
-  }
 
   public getInitialCard(): Observable<CardEntity> {
     const p = this.dbService
@@ -220,63 +139,6 @@ export class CardService {
       });
   }
 
-  private getFiles(cardId: number): Observable<FileEntity[]> {
-    console.error('NOT YET IMPLEMENTED');
-    return Observable.of(null);
-  }
-
-  private getTags(cardId: number): Observable<TagEntity[]> {
-    return Observable
-      .fromPromise(
-        this.dbService.getConnection('tag')
-          .innerJoin('card_tag', 'card_tag.tag_id', 'tag.id')
-          .where('card_tag.card_id', cardId)
-      )
-      .map((res: any[]) => {
-        console.log(res);
-        return res.map(r => this.mapTag(r));
-      });
-  }
-
-  private mapTag(r: any): TagEntity {
-    const t = new TagEntity();
-    t.id = r.id;
-    t.name = r.name;
-
-    return t;
-  }
-
-  private countAllLinks(cardId: number): Observable<number> {
-    return Observable
-      .fromPromise(
-        this.dbService.getConnection('card_card')
-          .count('card1_id')
-          .where('card1_id', cardId)
-          .or.where('card2_id', cardId)
-      )
-      .map(res => {
-        return res[ 0 ][ 'count(`card1_id`)' ];
-      });
-  }
-
-  private getLinks(cardId: number): Observable<CardEntity[]> {
-    return Observable
-      .fromPromise(
-        this.dbService.getConnection('card')
-          .innerJoin('card_card', 'card_card.card2_id', 'card.id')
-          .where('card_card.card1_id', cardId)
-      )
-      .flatMap((res: any[]) => {
-        const os: Observable<CardEntity>[] = res.map(r => this.mapCard(r));
-
-        if (os.length === 0) {
-          return Observable.of([]);
-        } else {
-          return Observable.forkJoin(os);
-        }
-      });
-  }
-
   /**
    *
    * @param card
@@ -284,24 +146,21 @@ export class CardService {
    * @return {Observable<CardEntity>}
    */
   private mapCard(card: any, references = false): Observable<CardEntity> {
-    const cardEntity = new CardEntity();
-    cardEntity.id = card.id;
-    cardEntity.title = card.title;
-    cardEntity.content = card.content;
+    const cardEntity = this.cardMapper.mapFromDb(card);
 
     if (references === false) {
       return Observable.of(cardEntity);
     }
 
-    const filesO = this.getFiles(cardEntity.id).map(files => {
+    const filesO = this.fileService.getFiles(cardEntity.id).map(files => {
       cardEntity.files = files;
       return null;
     });
-    const tagsO = this.getTags(cardEntity.id).map(tags => {
+    const tagsO = this.tagService.getTags(cardEntity.id).map(tags => {
       cardEntity.tags = tags;
       return null;
     });
-    const linksO = this.getLinks(cardEntity.id).map(links => {
+    const linksO = this.linkService.getLinks(cardEntity.id).map(links => {
       cardEntity.links = links;
       return null;
     });
@@ -326,7 +185,7 @@ export class CardService {
   }
 
   public deleteCard(card: CardEntity): Observable<boolean> {
-    return this
+    return this.linkService
       .countAllLinks(card.id)
       .flatMap((links: number) => {
         if (links <= 1) {
@@ -334,7 +193,7 @@ export class CardService {
         } else {
           return Observable.of(false);
         }
-      })
+      });
   }
 
   private _deleteCard(card: CardEntity): Observable<void> {
@@ -354,6 +213,6 @@ export class CardService {
               .where('id', card.id)
               .del()
           );
-      })
+      });
   }
 }

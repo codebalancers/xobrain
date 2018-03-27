@@ -16,6 +16,9 @@ import { ElectronService } from '../business/control/electron.service';
 import { EditService } from '../presentation/services/edit.service';
 import { GraphService } from '../presentation/services/graph.service';
 import { LinkService } from '../business/boundary/link.service';
+import { TagService } from '../business/boundary/tag.service';
+import { FileService } from '../business/boundary/file.service';
+import { CardMapper } from '../business/boundary/card.mapper';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -44,7 +47,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
-    CardService, LinkService, DatabaseService, ElectronService, EditService, GraphService,
+    CardService, CardMapper, LinkService, TagService, FileService, DatabaseService, ElectronService, EditService, GraphService,
     {
       provide: APP_INITIALIZER,
       useFactory: dbInitializer,
