@@ -22,7 +22,7 @@ export class CardContextPage {
     if (StringUtils.isBlank(this.searchValue)) {
       this.foundCards = [];
     } else {
-      this.cardService.getInitialCard().subscribe(c => this.foundCards.push(c));
+      this.cardService.searchCard(this.searchValue).subscribe(cards => this.foundCards = cards);
     }
   }
 }

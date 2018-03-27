@@ -216,4 +216,15 @@ export class CardService {
           );
       });
   }
+
+  public searchCard(searchValue: string): Observable<CardEntity[]> {
+    return Observable
+      .fromPromise(
+        this.dbService
+          .getConnection('card')
+          .where('title', 'LIKE', '%' + searchValue + '%')
+          .or.where('content', 'LIKE', '%' + searchValue + '%')
+      )
+      .map((res: any[]) => res.map(card => this.cardMapper.mapFromDb(card)));
+  }
 }
