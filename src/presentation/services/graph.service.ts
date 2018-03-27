@@ -84,14 +84,18 @@ export class GraphService implements OnDestroy {
     ArrayUtils.removeElement(this.nodes, node);
 
     // -- remove links to to/from node
-    this.links
-      .filter(l => LinkUtils.involves(cardId, l))
-      .forEach(l => ArrayUtils.removeElement(this.links, l));
+    this.removeLinksForNode(cardId);
 
     this._updateAll();
 
     setTimeout(() => {
       this.refresh();
     });
+  }
+
+  public removeLinksForNode(cardId: number): void {
+    this.links
+      .filter(l => LinkUtils.involves(cardId, l))
+      .forEach(l => ArrayUtils.removeElement(this.links, l));
   }
 }

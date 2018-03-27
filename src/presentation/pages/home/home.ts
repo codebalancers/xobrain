@@ -22,37 +22,7 @@ export class HomePage implements OnInit, OnDestroy {
       .takeUntil(this.componentDestroyed$)
       .subscribe((card: CardEntity) => {
         this.card = card;
-
-        const nodes: Node[] = [];
-        const links: Link[] = [];
-
-        if (card.id > 0) {
-          // handle persisted card
-          nodes.push(new Node(card));
-
-          if (LangUtils.isArray(card.links)) {
-            card.links.forEach(c => {
-              nodes.push(new Node(c));
-              links.push(new Link(card.id, c.id));
-            });
-          }
-        } else {
-          // handle new
-          console.log(card);
-          const nc = new Node(card);
-          nodes.push(nc);
-
-          if (LangUtils.isDefined(card.parent)) {
-            // handle branched card (has a parent)
-            links.push(new Link(card.parent.id, card.id));
-
-            const parentNode = this.graphService.getNode(card.parent.id);
-            nc.x = parentNode.x;
-            nc.y = parentNode.y;
-          }
-        }
-
-        this.graphService.pushElements(nodes, links);
+        this.createLinksForCard(card);
       });
   }
 
@@ -63,17 +33,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   saveCard(): void {
-    const oldId = this.card.id;
     this.cardService
       .save(this.card)
-      .subscribe(() => {
-        // save operation persisted new entity with auto-incremented id
-        if (oldId !== this.card.id) {
-          this.graphService.refresh();
-        } else {
-          this.graphService.refresh();
-        }
-      });
+      .subscribe((card) => this.updateCard(card));
   }
 
   branchCard(): void {
@@ -122,5 +84,37 @@ export class HomePage implements OnInit, OnDestroy {
           console.log('could not delete card')
         }
       });
+  }
+
+  private updateCard(card: CardEntity) {
+    this.graphService.removeLinksForNode(card.id);
+    this.createLinksForCard(this.card);
+    this.graphService.refresh();
+  }
+
+  private createLinksForCard(card: CardEntity): void {
+    const nodes: Node[] = [];
+    const links: Link[] = [];
+
+    const nc = new Node(card);
+    nodes.push(nc);
+
+    if (LangUtils.isArray(card.links)) {
+      card.links.forEach(c => {
+        nodes.push(new Node(c));
+        links.push(new Link(card.id, c.id));
+      });
+    }
+
+    if (LangUtils.isDefined(card.parent)) {
+      // handle branched card (has a parent)
+      links.push(new Link(card.parent.id, card.id));
+
+      const parentNode = this.graphService.getNode(card.parent.id);
+      nc.x = parentNode.x;
+      nc.y = parentNode.y;
+    }
+
+    this.graphService.pushElements(nodes, links);
   }
 }
