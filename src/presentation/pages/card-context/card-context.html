@@ -43,7 +43,7 @@
     <div>
       <ion-chip *ngFor="let card of foundCards" style="float: left">
         <ion-label>{{card.title}}</ion-label>
-        <button ion-button color="secondary">
+        <button ion-button color="secondary" (click)="addLink(card)">
           <ion-icon name="add"></ion-icon>
         </button>
       </ion-chip>
@@ -51,16 +51,9 @@
   </ion-item>
 
   <div>
-    <ion-chip>
-      <ion-label>Angular</ion-label>
-      <button ion-button>
-        <ion-icon name="close"></ion-icon>
-      </button>
-    </ion-chip>
-
-    <ion-chip>
-      <ion-label>A very long title that must be shortened</ion-label>
-      <button ion-button>
+    <ion-chip *ngFor="let c of card?.links">
+      <ion-label>{{c.title}}</ion-label>
+      <button ion-button (click)="removeLink(c)">
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-chip>
