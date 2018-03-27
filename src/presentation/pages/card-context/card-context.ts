@@ -19,7 +19,7 @@ export class CardContextPage implements OnDestroy {
   foundCards: CardEntity[] = [];
   searchValue: string;
 
-  constructor(editService: EditService, private cardService: CardService) {
+  constructor(private editService: EditService, private cardService: CardService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe(card => this.card = card);
@@ -38,11 +38,21 @@ export class CardContextPage implements OnDestroy {
     }
   }
 
+  /**
+   * @param {CardEntity} card that is added as link
+   */
   addLink(card: CardEntity): void {
     this.card.links.push(card);
+    this.card.modified = true;
+    this.editService.emitModified(this.card.modified);
   }
 
+  /**
+   * @param {CardEntity} card that is removed as link
+   */
   removeLink(card: CardEntity): void {
     ArrayUtils.removeElement(this.card.links, card);
+    this.card.modified = true;
+    this.editService.emitModified(this.card.modified);
   }
 }
