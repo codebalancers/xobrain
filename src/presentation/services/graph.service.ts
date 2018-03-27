@@ -84,7 +84,7 @@ export class GraphService implements OnDestroy {
     ArrayUtils.removeElement(this.nodes, node);
 
     // -- remove links to to/from node
-    this.removeLinksForNode(cardId);
+    this.removeAllLinksForNode(cardId);
 
     this._updateAll();
 
@@ -93,9 +93,15 @@ export class GraphService implements OnDestroy {
     });
   }
 
-  public removeLinksForNode(cardId: number): void {
+  public removeAllLinksForNode(cardId: number): void {
     this.links
       .filter(l => LinkUtils.involves(cardId, l))
+      .forEach(l => ArrayUtils.removeElement(this.links, l));
+  }
+
+  public removeLinksOfNode(cardId: number): void {
+    this.links
+      .filter(l => LinkUtils.isLinkOf(cardId, l))
       .forEach(l => ArrayUtils.removeElement(this.links, l));
   }
 }

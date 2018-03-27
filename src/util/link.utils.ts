@@ -47,4 +47,18 @@ export class LinkUtils {
 
     return cardId === lSourceId || cardId === lTargetId;
   }
+
+  public static isLinkOf(cardId: number, link: Link) {
+    let lSourceId: number;
+
+    if (link.source instanceof Node) {
+      lSourceId = link.source.card.id;
+    } else if (typeof link.source === 'number') {
+      lSourceId = link.source;
+    } else {
+      return false;
+    }
+
+    return cardId === lSourceId;
+  }
 }

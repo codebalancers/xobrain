@@ -87,7 +87,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private updateCard(card: CardEntity) {
-    this.graphService.removeLinksForNode(card.id);
+    this.graphService.removeLinksOfNode(card.id);
     this.createLinksForCard(this.card);
     this.graphService.refresh();
   }
