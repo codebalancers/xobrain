@@ -73,7 +73,7 @@ export class CardService {
         .fromPromise(
           this.dbService
             .getConnection('card')
-            .insert({ title: card.title, content: card.content, creationDate: new Date() })
+            .insert({ title: card.title, content: card.content, modificationDate: new Date() })
             .returning('id')
         )
         .map(d => {
@@ -111,7 +111,7 @@ export class CardService {
   private createLink(from: CardEntity, to: CardEntity) {
     this.dbService
       .getConnection('card_card')
-      .insert({ card1_id: from.id, card2_id: to.id, creationDate: new Date() })
+      .insert({ card1_id: from.id, card2_id: to.id, modificationDate: new Date() })
       .then(d => console.log(d));
   }
 
@@ -127,7 +127,7 @@ export class CardService {
         console.log(d);
 
         const data = to.map(ce => {
-          return { card1_id: from.id, card2_id: ce.id, creationDate: new Date() };
+          return { card1_id: from.id, card2_id: ce.id, modificationDate: new Date() };
         });
 
         if (data.length === 0) {
@@ -163,7 +163,7 @@ export class CardService {
 
         // -- create new links between card and tags
         const data = tags.map(tag => {
-          return { card_id: card.id, tag_id: tag.id, creationDate: new Date() };
+          return { card_id: card.id, tag_id: tag.id, modificationDate: new Date() };
         });
 
         if (data.length === 0) {
@@ -182,7 +182,7 @@ export class CardService {
       .fromPromise(
         this.dbService
           .getConnection('tag')
-          .insert({ name: tag.name, creationDate: new Date() })
+          .insert({ name: tag.name, modificationDate: new Date() })
           .returning('id')
       )
       .map(d => {

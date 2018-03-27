@@ -3,7 +3,7 @@ import { FileEntity } from './file.entity';
 
 export class CardEntity {
   id: number;
-  creationDate: Date;
+  modificationDate: Date;
   title: string;
   content: string;
   tags: TagEntity[] = [];

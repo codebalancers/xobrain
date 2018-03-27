@@ -1,5 +1,5 @@
 export class TagEntity {
   id: number;
-  creationDate: Date;
+  modificationDate: Date;
   name: string;
 }

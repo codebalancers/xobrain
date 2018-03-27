@@ -1,5 +1,5 @@
 export class FileEntity {
   id: number;
-  creationDate: Date;
+  modificationDate: Date;
   data: Buffer;
 }

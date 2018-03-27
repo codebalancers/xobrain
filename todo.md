@@ -1,5 +1,5 @@
 * links form
-* refactor CardService#updateLinks: do not delete, but update & never delete links, but their strength to 0.1
+* refactor CardService#updateLinks: do not delete, but update & never delete links, put their strength to 0.1
 * store modification date (instead of creation date)
 * search form
 * tags form
