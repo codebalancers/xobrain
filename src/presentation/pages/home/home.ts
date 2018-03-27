@@ -25,6 +25,11 @@ export class HomePage implements OnInit, OnDestroy {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe((card: CardEntity) => {
+        // the previous card was an unsaved that is now deselected, in that case the previous card is removed from the graph
+        if (LangUtils.isDefined(this.card) && this.card.id < 1) {
+          this.graphService.removeNode(this.card.id);
+        }
+
         this.card = card;
         this.createLinksForCard(card);
       });
