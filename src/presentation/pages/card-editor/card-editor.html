@@ -2,11 +2,11 @@
   <ion-list>
     <ion-item>
       <ion-label color="primary" stacked>Title</ion-label>
-      <ion-input [(ngModel)]="card.title" placeholder="Title" name="title"></ion-input>
+      <ion-input [(ngModel)]="card.title" placeholder="Title" name="title" (ionChange)="modified()"></ion-input>
     </ion-item>
 
     <div>
-      <md-editor item-content [(model)]="card.content"></md-editor>
+      <md-editor item-content [(model)]="card.content" (change)="modified()"></md-editor>
     </div>
   </ion-list>
 </form>

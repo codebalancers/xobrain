@@ -7,6 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { GraphService } from '../../services/graph.service';
 import { LangUtils } from '../../../util/lang.utils';
 import { ArrayUtils } from '../../../util/array.utils';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'page-home',
@@ -17,12 +18,25 @@ export class HomePage implements OnInit, OnDestroy {
 
   card: CardEntity;
 
-  constructor(private cardService: CardService, private editService: EditService, private graphService: GraphService) {
+  constructor(titleService: Title,
+              private cardService: CardService,
+              private editService: EditService,
+              private graphService: GraphService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe((card: CardEntity) => {
         this.card = card;
         this.createLinksForCard(card);
+      });
+
+    editService.cardModifiedSubject$
+      .takeUntil(this.componentDestroyed$)
+      .subscribe((modified: boolean) => {
+        if (modified === true) {
+          titleService.setTitle('* ' + 'Xobrain');
+        } else {
+          titleService.setTitle('Xobrain');
+        }
       });
   }
 
@@ -81,7 +95,7 @@ export class HomePage implements OnInit, OnDestroy {
             .getInitialCard()
             .subscribe(card => this.editService.cardSelected(card));
         } else {
-          console.log('could not delete card')
+          console.log('could not delete card');
         }
       });
   }

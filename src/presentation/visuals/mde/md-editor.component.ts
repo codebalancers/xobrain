@@ -21,6 +21,7 @@ export class MdEditorComponent implements AfterViewInit {
   }
 
   @Output() modelChange = new EventEmitter<string>();
+  @Output() change = new EventEmitter<void>();
 
   @ViewChild('simplemde') textarea: ElementRef;
 
@@ -31,12 +32,13 @@ export class MdEditorComponent implements AfterViewInit {
       element: this.textarea.nativeElement,
       spellChecker: false,
       // forceSync: true,
-      showIcons: ['code'],
-      hideIcons: ['preview', 'side-by-side', 'fullscreen', 'guide', 'image', 'table']
+      showIcons: [ 'code' ],
+      hideIcons: [ 'preview', 'side-by-side', 'fullscreen', 'guide', 'image', 'table' ]
     });
 
     this.editor.codemirror.on('change', () => {
       this.modelChange.emit(this.editor.value());
+      this.change.emit();
     });
 
     // set initial value

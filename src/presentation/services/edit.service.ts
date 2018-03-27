@@ -10,11 +10,19 @@ export class EditService implements OnDestroy {
   private _cardSelectedSubject = new ReplaySubject<CardEntity>();
   public readonly cardSelectedSubject$ = this._cardSelectedSubject.asObservable();
 
+  private _cardModifiedSubject = new ReplaySubject<boolean>();
+  public readonly cardModifiedSubject$ = this._cardModifiedSubject.asObservable();
+
   constructor(private cardService: CardService, private graphService: GraphService) {
   }
 
   ngOnDestroy(): void {
     this._cardSelectedSubject.complete();
+    this._cardModifiedSubject.complete();
+  }
+
+  public emitModified(modified: boolean): void {
+    this._cardModifiedSubject.next(modified);
   }
 
   public cardSelected(card: CardEntity): void {
@@ -60,6 +68,6 @@ export class EditService implements OnDestroy {
         });
 
         this.graphService.pushElements(nodes, links);
-      })
+      });
   }
 }

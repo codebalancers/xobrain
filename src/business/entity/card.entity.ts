@@ -15,4 +15,12 @@ export class CardEntity {
    * this card on creation of a new card
    */
   parent: CardEntity;
+
+  /**
+   * transient field that is used store the modified state in case the card was changed and potentially
+   * must be saved
+   */
+  modified = false;
+
+  // TODO store original values...
 }
