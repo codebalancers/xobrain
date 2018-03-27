@@ -1,7 +1,3 @@
-* links form
-* handle modified cards (ensure not changes are lost when another card is selected)
-  * handle modified new cards
-
 * refactor CardService#updateLinks: do not delete, but update & never delete links, put their strength to 0.1
 * use sqlite fts5 for searching
 * search form

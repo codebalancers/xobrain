@@ -19,6 +19,8 @@ import { LinkService } from '../business/boundary/link.service';
 import { TagService } from '../business/boundary/tag.service';
 import { FileService } from '../business/boundary/file.service';
 import { CardMapper } from '../business/boundary/card.mapper';
+import { KeyService } from '../presentation/services/key.service';
+import { WindowKeyNavListenerDirective } from '../business/control/window-key-nav-listener.directive';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -30,6 +32,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     MyApp,
     HomePage,
     GraphComponent,
+    WindowKeyNavListenerDirective,
     ...SHARED_VISUALS,
     ...D3_DIRECTIVES
   ],
@@ -47,6 +50,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
+    KeyService,
     CardService, CardMapper, LinkService, TagService, FileService, DatabaseService, ElectronService, EditService, GraphService,
     {
       provide: APP_INITIALIZER,

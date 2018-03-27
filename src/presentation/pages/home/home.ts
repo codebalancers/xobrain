@@ -8,6 +8,8 @@ import { GraphService } from '../../services/graph.service';
 import { LangUtils } from '../../../util/lang.utils';
 import { ArrayUtils } from '../../../util/array.utils';
 import { Title } from '@angular/platform-browser';
+import { KeyService } from '../../services/key.service';
+import { KeyEvent } from '../../services/key-event';
 
 @Component({
   selector: 'page-home',
@@ -21,6 +23,7 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(titleService: Title,
               private cardService: CardService,
               private editService: EditService,
+              private keyService: KeyService,
               private graphService: GraphService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
@@ -41,6 +44,14 @@ export class HomePage implements OnInit, OnDestroy {
           titleService.setTitle('* ' + 'Xobrain');
         } else {
           titleService.setTitle('Xobrain');
+        }
+      });
+
+    keyService.keyEventSubject$
+      .takeUntil(this.componentDestroyed$)
+      .subscribe((keyEvent: KeyEvent) => {
+        if (keyEvent === KeyEvent.SAVE) {
+          this.saveCard();
         }
       });
   }
