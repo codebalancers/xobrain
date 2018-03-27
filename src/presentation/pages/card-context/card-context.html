@@ -5,38 +5,65 @@
   </ion-item>
 
   <div>
-      <ion-chip>
-        <ion-label>Monthly</ion-label>
-        <button ion-button>
-          <ion-icon name="close"></ion-icon>
-        </button>
-      </ion-chip>
+    <ion-chip>
+      <ion-label>Monthly</ion-label>
+      <button ion-button>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-chip>
 
-      <ion-chip>
-        <ion-label>Monthly</ion-label>
-        <button ion-button>
-          <ion-icon name="close"></ion-icon>
-        </button>
-      </ion-chip>
+    <ion-chip>
+      <ion-label>Monthly</ion-label>
+      <button ion-button>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-chip>
 
-      <ion-chip>
-        <ion-label>Monthly</ion-label>
-        <button ion-button>
-          <ion-icon name="close"></ion-icon>
-        </button>
-      </ion-chip>
+    <ion-chip>
+      <ion-label>Monthly</ion-label>
+      <button ion-button>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-chip>
 
-      <ion-chip>
-        <ion-label>Monthly</ion-label>
-        <button ion-button>
-          <ion-icon name="close"></ion-icon>
-        </button>
-      </ion-chip>
+    <ion-chip>
+      <ion-label>Monthly</ion-label>
+      <button ion-button>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-chip>
   </div>
 
-  <ion-item>
-    <ion-label color="primary" stacked>Links</ion-label>
-    <ion-input placeholder="Link other cards"></ion-input>
+  <ion-item no-padding>
+    <!--<ion-label color="primary" stacked>Links</ion-label>-->
+    <ion-searchbar [(ngModel)]="searchValue"
+                   (ionInput)="searchCards($event)"
+                   placeholder="Link other cards"></ion-searchbar>
+
+    <div>
+      <ion-chip *ngFor="let card of foundCards" style="float: left">
+        <ion-label>{{card.title}}</ion-label>
+        <button ion-button color="secondary">
+          <ion-icon name="add"></ion-icon>
+        </button>
+      </ion-chip>
+    </div>
   </ion-item>
+
+  <div>
+    <ion-chip>
+      <ion-label>Angular</ion-label>
+      <button ion-button>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-chip>
+
+    <ion-chip>
+      <ion-label>A very long title that must be shortened</ion-label>
+      <button ion-button>
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-chip>
+  </div>
 
 </ion-list>
