@@ -6,11 +6,12 @@ import { ArrayUtils } from '../../util/array.utils';
 import { LangUtils } from '../../util/lang.utils';
 import { TagEntity } from '../entity/tag.entity';
 import { FileEntity } from '../entity/file.entity';
+import { LinkService } from './link.service';
 
 @Injectable()
 export class CardService {
 
-  constructor(private dbService: DatabaseService) {
+  constructor(private dbService: DatabaseService, private linkService: LinkService) {
   }
 
   public findParents(card: CardEntity): Observable<CardEntity[]> {

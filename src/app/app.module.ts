@@ -15,6 +15,7 @@ import { DatabaseService } from '../business/control/database.service';
 import { ElectronService } from '../business/control/electron.service';
 import { EditService } from '../presentation/services/edit.service';
 import { GraphService } from '../presentation/services/graph.service';
+import { LinkService } from '../business/boundary/link.service';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -33,7 +34,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     BrowserModule,
     IonicModule.forRoot(MyApp)
   ],
-  bootstrap: [IonicApp],
+  bootstrap: [ IonicApp ],
   entryComponents: [
     MyApp,
     HomePage
@@ -41,14 +42,14 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
-    CardService, DatabaseService, ElectronService, EditService, GraphService,
+    CardService, LinkService, DatabaseService, ElectronService, EditService, GraphService,
     {
       provide: APP_INITIALIZER,
       useFactory: dbInitializer,
       multi: true,
-      deps: [DatabaseService]
+      deps: [ DatabaseService ]
     }
   ]
 })
