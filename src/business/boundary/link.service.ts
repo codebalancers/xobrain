@@ -59,7 +59,7 @@ export class LinkService {
         this.dbService
           .getConnection('card_card')
           .where('card1_id', from.id)
-          .or.where('card1_id', from.id)
+          .or.where('card2_id', from.id)
       )
       .flatMap((existingLinks: LinkInsert[]) => {
         /**
