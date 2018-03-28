@@ -6,6 +6,7 @@ import { StringUtils } from '../../../util/string.utils';
 import { Subject } from 'rxjs/Subject';
 import { EditService } from '../../services/edit.service';
 import { ArrayUtils } from '../../../util/array.utils';
+import { LangUtils } from '../../../util/lang.utils';
 
 @IonicPage()
 @Component({
@@ -54,5 +55,9 @@ export class CardContextPage implements OnDestroy {
     ArrayUtils.removeElement(this.card.links, card);
     this.card.modified = true;
     this.editService.emitModified(this.card.modified);
+  }
+
+  canAddLink(card: CardEntity): boolean {
+    return LangUtils.isUndefined(this.card.links.find(l => l.id === card.id));
   }
 }
