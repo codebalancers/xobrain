@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from '../control/database.service';
 import { TagEntity } from '../entity/tag.entity';
 import { Observable } from 'rxjs/Observable';
-import { LangUtils } from '../../util/lang.utils';
 import { CardEntity } from '../entity/card.entity';
 
 @Injectable()
@@ -55,7 +54,7 @@ export class TagService {
   public updateTags(card: CardEntity, tags: TagEntity[]): Observable<void> {
     // -- ensure all tag entities are present
     const queries = tags
-      .filter(t => LangUtils.isUndefined(t.id))
+      .filter(t => t.id < 1)
       .map(t => this.createTag(t));
 
     // -- delete all old connections for the specified card
@@ -84,5 +83,15 @@ export class TagService {
           .getConnection('card_tag')
           .insert(data));
       });
+  }
+
+  public searchTags(searchValue: string): Observable<TagEntity[]> {
+    return Observable
+      .fromPromise(
+        this.dbService
+          .getConnection('tag')
+          .where('name', 'LIKE', '%' + searchValue + '%')
+      )
+      .map((res: any[]) => res.map(tag => new TagEntity(tag.name, tag.id)));
   }
 }

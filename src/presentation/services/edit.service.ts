@@ -1,20 +1,17 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { CardEntity } from '../../business/entity/card.entity';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { CardService } from '../../business/boundary/card.service';
 import { GraphService } from './graph.service';
 import { Link, Node } from '../d3/models';
-import { LangUtils } from '../../util/lang.utils';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class EditService implements OnDestroy {
-  private _cardSelectedSubject = new ReplaySubject<CardEntity>();
+  private _cardSelectedSubject = new BehaviorSubject<CardEntity>(new CardEntity());
   public readonly cardSelectedSubject$ = this._cardSelectedSubject.asObservable();
 
-  private _cardModifiedSubject = new ReplaySubject<boolean>();
+  private _cardModifiedSubject = new BehaviorSubject<boolean>(false);
   public readonly cardModifiedSubject$ = this._cardModifiedSubject.asObservable();
-
-  private currentCard: CardEntity;
 
   constructor(private cardService: CardService, private graphService: GraphService) {
   }
@@ -25,16 +22,20 @@ export class EditService implements OnDestroy {
   }
 
   public emitModified(modified: boolean): void {
+    // do not emit an event if modified has not changed
+    if (this._cardModifiedSubject.getValue() === modified) {
+      return;
+    }
+
     this._cardModifiedSubject.next(modified);
   }
 
   public cardSelected(card: CardEntity): void {
     // do not emit an event if selection has not changed
-    if (LangUtils.isDefined(this.currentCard) && this.currentCard.id == card.id) {
+    if (this._cardSelectedSubject.getValue().id == card.id) {
       return;
     }
 
-    this.currentCard = card;
     this._cardSelectedSubject.next(card);
 
     this.cardService

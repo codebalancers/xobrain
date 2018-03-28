@@ -6,7 +6,8 @@ import { StringUtils } from '../../../util/string.utils';
 import { Subject } from 'rxjs/Subject';
 import { EditService } from '../../services/edit.service';
 import { ArrayUtils } from '../../../util/array.utils';
-import { LangUtils } from '../../../util/lang.utils';
+import { TagEntity } from '../../../business/entity/tag.entity';
+import { TagService } from '../../../business/boundary/tag.service';
 
 @IonicPage()
 @Component({
@@ -20,7 +21,10 @@ export class CardContextPage implements OnDestroy {
   foundCards: CardEntity[] = [];
   searchValue: string;
 
-  constructor(private editService: EditService, private cardService: CardService) {
+  foundTags: TagEntity[] = [];
+  searchTagValue: string;
+
+  constructor(private editService: EditService, private cardService: CardService, private tagService: TagService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe(card => {
@@ -29,6 +33,8 @@ export class CardContextPage implements OnDestroy {
         // reset search
         this.searchValue = null;
         this.foundCards = [];
+        this.searchTagValue = null;
+        this.foundTags = [];
       });
   }
 
@@ -67,6 +73,34 @@ export class CardContextPage implements OnDestroy {
   }
 
   canAddLink(card: CardEntity): boolean {
-    return LangUtils.isUndefined(this.card.links.find(l => l.id === card.id));
+    return ArrayUtils.containsNot(this.card.links, card, (a, b) => a.id === b.id);
+  }
+
+  addTag(tag: TagEntity): void {
+    this.card.tags.push(tag);
+    this.card.modified = true;
+    this.editService.emitModified(this.card.modified);
+  }
+
+  canAddTag(tag: TagEntity): boolean {
+    return ArrayUtils.containsNot(this.card.tags, tag, (a, b) => a.name === b.name);
+  }
+
+  removeTag(tag: TagEntity): void {
+  }
+
+  searchTags(): void {
+    if (StringUtils.isBlank(this.searchTagValue)) {
+      this.foundTags = [];
+    } else {
+      this.tagService
+        .searchTags(this.searchTagValue)
+        .map((tags: TagEntity[]) => {
+          // add the search string itself to the beginning of the list, so a new tags can be created
+          tags.unshift(new TagEntity(this.searchTagValue));
+          return tags;
+        })
+        .subscribe(tags => this.foundTags = tags);
+    }
   }
 }

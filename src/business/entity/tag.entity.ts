@@ -1,5 +1,6 @@
 export class TagEntity {
-  id: number;
-  modificationDate: Date;
-  name: string;
+  constructor(public name?: string,
+              public id: number = -1,
+              public modificationDate?: Date) {
+  }
 }

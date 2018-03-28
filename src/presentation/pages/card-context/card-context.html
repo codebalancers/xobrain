@@ -1,41 +1,29 @@
 <ion-list>
-  <ion-item>
-    <ion-label color="primary" stacked>Add Tag</ion-label>
-    <ion-input placeholder="New Tag"></ion-input>
+  <ion-item no-padding>
+    <ion-searchbar [(ngModel)]="searchTagValue"
+                   (ionInput)="searchTags($event)"
+                   placeholder="Add tag"></ion-searchbar>
+
+    <div>
+      <ion-chip *ngFor="let tag of foundTags" style="float: left">
+        <ion-label>{{tag.name}}</ion-label>
+        <button ion-button color="secondary" (click)="addTag(tag)" *ngIf="canAddTag(tag)">
+          <ion-icon name="add"></ion-icon>
+        </button>
+      </ion-chip>
+    </div>
   </ion-item>
 
   <div>
-    <ion-chip>
-      <ion-label>Monthly</ion-label>
-      <button ion-button>
-        <ion-icon name="close"></ion-icon>
-      </button>
-    </ion-chip>
-
-    <ion-chip>
-      <ion-label>Monthly</ion-label>
-      <button ion-button>
-        <ion-icon name="close"></ion-icon>
-      </button>
-    </ion-chip>
-
-    <ion-chip>
-      <ion-label>Monthly</ion-label>
-      <button ion-button>
-        <ion-icon name="close"></ion-icon>
-      </button>
-    </ion-chip>
-
-    <ion-chip>
-      <ion-label>Monthly</ion-label>
-      <button ion-button>
+    <ion-chip *ngFor="let tag of card?.tags">
+      <ion-label>{{tag.name}}</ion-label>
+      <button ion-button (click)="removeTag(tag)">
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-chip>
   </div>
 
   <ion-item no-padding>
-    <!--<ion-label color="primary" stacked>Links</ion-label>-->
     <ion-searchbar [(ngModel)]="searchValue"
                    (ionInput)="searchCards($event)"
                    placeholder="Link other cards"></ion-searchbar>
@@ -51,9 +39,9 @@
   </ion-item>
 
   <div>
-    <ion-chip *ngFor="let c of card?.links">
-      <ion-label>{{c.title}}</ion-label>
-      <button ion-button (click)="removeLink(c)">
+    <ion-chip *ngFor="let link of card?.links">
+      <ion-label>{{link.title}}</ion-label>
+      <button ion-button (click)="removeLink(link)">
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-chip>
