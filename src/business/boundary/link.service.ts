@@ -3,6 +3,7 @@ import { DatabaseService } from '../control/database.service';
 import { Observable } from 'rxjs/Observable';
 import { CardEntity } from '../entity/card.entity';
 import { CardMapper } from './card.mapper';
+import { LangUtils } from '../../util/lang.utils';
 
 
 @Injectable()
@@ -22,7 +23,7 @@ export class LinkService {
    * Store/update the specified links for the specified card.
    *
    * @param {CardEntity} from
-   * @param {{card: CardEntity; weight: number}[]} to
+   * @param {{}} to weighted links
    * @return {Observable<void>}
    */
   public updateLinks(from: CardEntity, to: { card: CardEntity, weight: number }[]): Observable<void> {
@@ -31,29 +32,65 @@ export class LinkService {
         this.dbService
           .getConnection('card_card')
           .where('card1_id', from.id)
-          .del()
       )
-      .flatMap(d => {
-        console.log(d);
+      .flatMap((existingLinks: any[]) => {
+        /**
+         * All existing links from that are not included in the to array have to be deleted.
+         */
+        const toBeDeleted: number[] = existingLinks
+          .filter(el => LangUtils.isUndefined(to.find(t => t.card.id === el.card2_id)))
+          .map(el => el.card2_id);
 
-        const data = to.map(entry => {
-          return {
-            card1_id: from.id,
-            card2_id: entry.card.id,
-            modificationDate: new Date(),
-            weight: entry.weight
-          };
-        });
+        /**
+         * All links that do not exist, have to be created.
+         */
+        const toBeCreated: { card: CardEntity, weight: number }[] = to
+          .filter(t => LangUtils.isUndefined(existingLinks.find(el => t.card.id === el.card2_id)));
 
-        if (data.length === 0) {
-          return Observable.of(null);
+        const os: Observable<void>[] = [];
+
+        if (toBeDeleted.length > 0) {
+          os.push(this.deleteLinks(from.id, toBeDeleted));
         }
 
-        return Observable.fromPromise(this.dbService
-          .getConnection('card_card')
-          .insert(data)
-        );
+        if (toBeCreated.length > 0) {
+          os.push(this.createLinks(from.id, toBeCreated));
+        }
+
+        if (os.length > 0) {
+          return Observable.forkJoin(os).map(() => null);
+        } else {
+          return Observable.of(null);
+        }
       });
+  }
+
+  private deleteLinks(fromId: number, toBeDeleted: number[]): Observable<void> {
+    return Observable
+      .fromPromise(
+        this.dbService
+          .getConnection('card_card')
+          .where('card1_id', fromId)
+          .and.whereIn('card2_id', toBeDeleted)
+          .del()
+      );
+  }
+
+  private createLinks(fromId: number, toBeCreated: { card: CardEntity; weight: number }[]): Observable<void> {
+    const data = toBeCreated.map(entry => {
+      return {
+        card1_id: fromId,
+        card2_id: entry.card.id,
+        modificationDate: new Date(),
+        weight: entry.weight
+      };
+    });
+
+    return Observable.fromPromise(
+      this.dbService
+        .getConnection('card_card')
+        .insert(data)
+    );
   }
 
   public getLinks(cardId: number): Observable<CardEntity[]> {
