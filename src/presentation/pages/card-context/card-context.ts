@@ -23,7 +23,13 @@ export class CardContextPage implements OnDestroy {
   constructor(private editService: EditService, private cardService: CardService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
-      .subscribe(card => this.card = card);
+      .subscribe(card => {
+        this.card = card;
+
+        // reset search
+        this.searchValue = null;
+        this.foundCards = [];
+      });
   }
 
   ngOnDestroy(): void {
@@ -35,7 +41,10 @@ export class CardContextPage implements OnDestroy {
     if (StringUtils.isBlank(this.searchValue)) {
       this.foundCards = [];
     } else {
-      this.cardService.searchCard(this.searchValue).subscribe(cards => this.foundCards = cards);
+      // self links are forbidden => remove the current card from the search result (if included)
+      this.cardService.searchCard(this.searchValue)
+        .map((cards: CardEntity[]) => cards.filter(c => c.id != this.card.id))
+        .subscribe(cards => this.foundCards = cards);
     }
   }
 

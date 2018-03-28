@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { CardService } from '../../business/boundary/card.service';
 import { GraphService } from './graph.service';
 import { Link, Node } from '../d3/models';
+import { LangUtils } from '../../util/lang.utils';
 
 @Injectable()
 export class EditService implements OnDestroy {
@@ -12,6 +13,8 @@ export class EditService implements OnDestroy {
 
   private _cardModifiedSubject = new ReplaySubject<boolean>();
   public readonly cardModifiedSubject$ = this._cardModifiedSubject.asObservable();
+
+  private currentCard: CardEntity;
 
   constructor(private cardService: CardService, private graphService: GraphService) {
   }
@@ -26,6 +29,12 @@ export class EditService implements OnDestroy {
   }
 
   public cardSelected(card: CardEntity): void {
+    // do not emit an event if selection has not changed
+    if (LangUtils.isDefined(this.currentCard) && this.currentCard.id == card.id) {
+      return;
+    }
+
+    this.currentCard = card;
     this._cardSelectedSubject.next(card);
 
     this.cardService
