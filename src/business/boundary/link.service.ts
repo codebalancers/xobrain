@@ -102,16 +102,18 @@ export class LinkService {
 
     return Observable
       .fromPromise(
-        this.dbService
-          .getConnection('card_card')
-          .where(function () {
-            this.where('card1_id', fromId).and.whereIn('card2_id', toBeDeletedRight)
-          })
-          .orWhere(function () {
-            this.where('card2_id', fromId).and.whereIn('card1_id', toBeDeletedLeft)
-          })
+        this.dbService.getConnection('card_card')
+          .where('card1_id', fromId).and.whereIn('card2_id', toBeDeletedRight)
           .del()
-      );
+      )
+      .flatMap(() => {
+        return Observable
+          .fromPromise(
+            this.dbService.getConnection('card_card')
+              .where('card2_id', fromId).and.whereIn('card1_id', toBeDeletedLeft)
+              .del()
+          )
+      });
   }
 
   private createLinks(fromId: number, toBeCreated: { card: CardEntity; weight: number }[]): Observable<void> {
@@ -125,11 +127,28 @@ export class LinkService {
   }
 
   public getLinks(cardId: number): Observable<CardEntity[]> {
+    /*
+    The following Knex statement did not work in conjuction with typescript, this
+    is why I ended up with a full raw query.
+
+    .select('*').from('card')
+        .join('card_card', function () {
+          this.on(function () {
+            this.on('card_card.card1_id', '=', cardId).andOn('card_card.card2_id', '=', 'card.id');
+            this.orOn('card_card.card2_id', '=', cardId) //.andOn('card_card.card1_id', '=', 'card.id');
+          })
+        })
+     */
+
     return Observable
       .fromPromise(
-        this.dbService.getConnection('card')
-          .innerJoin('card_card', 'card_card.card2_id', 'card.id')
-          .where('card_card.card1_id', cardId)
+        this.dbService
+          .getConnection()
+          .raw(
+            'SELECT * FROM card c, card_card cc ' +
+            'WHERE (cc.card1_id = ? AND cc.card2_id = c.id) OR (cc.card2_id = ? AND cc.card1_id = c.id)',
+            [ cardId, cardId ]
+          )
       )
       .map((res: any[]) => {
         return res.map(r => this.cardMapper.mapFromDb(r));

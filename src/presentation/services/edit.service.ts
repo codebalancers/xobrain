@@ -29,7 +29,7 @@ export class EditService implements OnDestroy {
     this._cardSelectedSubject.next(card);
 
     this.cardService
-      .updateChildren(card)
+      .updateLinks(card)
       .subscribe(card => {
         const nodes: Node[] = [];
         const links: Link[] = [];
@@ -49,25 +49,26 @@ export class EditService implements OnDestroy {
         this.graphService.pushElements(nodes, links);
       });
 
-    this.cardService
-      .findParents(card)
-      .subscribe(cards => {
-        const nodes: Node[] = [];
-        const links: Link[] = [];
-
-        const childNode = this.graphService.getNode(card.id);
-
-        cards.forEach(l => {
-          const np = new Node(l);
-          nodes.push(np);
-
-          np.x = childNode.x;
-          np.y = childNode.y;
-
-          links.push(new Link(l.id, card.id));
-        });
-
-        this.graphService.pushElements(nodes, links);
-      });
+    // // TODO to be removed
+    // this.cardService
+    //   .findParents(card)
+    //   .subscribe(cards => {
+    //     const nodes: Node[] = [];
+    //     const links: Link[] = [];
+    //
+    //     const childNode = this.graphService.getNode(card.id);
+    //
+    //     cards.forEach(l => {
+    //       const np = new Node(l);
+    //       nodes.push(np);
+    //
+    //       np.x = childNode.x;
+    //       np.y = childNode.y;
+    //
+    //       links.push(new Link(l.id, card.id));
+    //     });
+    //
+    //     this.graphService.pushElements(nodes, links);
+    //   });
   }
 }
