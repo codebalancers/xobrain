@@ -91,7 +91,7 @@ export class ArrayUtils {
     });
   }
 
-  public static contains<T>(array: T[], testValue: T, equalsPredicate?: (arrayElem: T, testValue: T) => boolean): boolean {
+  public static contains<T>(array: T[], testValue: any, equalsPredicate?: (arrayElem: T, testValue: any) => boolean): boolean {
     let found: T;
 
     if (LangUtils.isDefined(equalsPredicate)) {
@@ -103,7 +103,7 @@ export class ArrayUtils {
     return LangUtils.isDefined(found);
   }
 
-  public static containsNot<T>(array: T[], testValue: T, equalsPredicate?: (arrayElem: T, testValue: T) => boolean): boolean {
+  public static containsNot<T>(array: T[], testValue: any, equalsPredicate?: (arrayElem: T, testValue: any) => boolean): boolean {
     return !this.contains(array, testValue, equalsPredicate);
   }
 }

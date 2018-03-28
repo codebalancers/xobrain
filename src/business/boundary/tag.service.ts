@@ -3,6 +3,13 @@ import { DatabaseService } from '../control/database.service';
 import { TagEntity } from '../entity/tag.entity';
 import { Observable } from 'rxjs/Observable';
 import { CardEntity } from '../entity/card.entity';
+import { ArrayUtils } from '../../util/array.utils';
+
+interface TagLink {
+  card_id: number,
+  tag_id: number,
+  modificationDate: Date
+}
 
 @Injectable()
 export class TagService {
@@ -30,18 +37,26 @@ export class TagService {
     return t;
   }
 
-  private createTag(tag: TagEntity): Observable<void> {
-    return Observable
-      .fromPromise(
-        this.dbService
-          .getConnection('tag')
-          .insert({ name: tag.name, modificationDate: new Date() })
-          .returning('id')
-      )
-      .map(d => {
-        tag.id = d[ 0 ];
-        return null;
-      });
+  private createTags(tags: TagEntity[]): Observable<void> {
+    const os: Observable<void>[] = tags.map(tag => {
+      return Observable
+        .fromPromise(
+          this.dbService
+            .getConnection('tag')
+            .insert({ name: tag.name, modificationDate: new Date() })
+            .returning('id')
+        )
+        .map(d => {
+          tag.id = d[ 0 ];
+          return null;
+        });
+    });
+
+    if (os.length > 0) {
+      return Observable.forkJoin(os).map(() => null);
+    } else {
+      return Observable.of(null);
+    }
   }
 
   /**
@@ -53,35 +68,43 @@ export class TagService {
    */
   public updateTags(card: CardEntity, tags: TagEntity[]): Observable<void> {
     // -- ensure all tag entities are present
-    const queries = tags
-      .filter(t => t.id < 1)
-      .map(t => this.createTag(t));
+    const tagsToBeCreated = tags.filter(t => t.id < 1);
 
-    // -- delete all old connections for the specified card
-    queries.push(
-      Observable.fromPromise(this.dbService
-        .getConnection('card_tag')
-        .where('card_id', card.id)
-        .del())
-    );
+    return this
+      .createTags(tagsToBeCreated)
+      .flatMap(() => Observable.fromPromise(this.dbService.getConnection('card_tag').where('card_id', card.id)))
+      .flatMap((existingTags: TagLink[]) => {
+        /**
+         * All existing links that are not included in the tags array have to be deleted.
+         */
+        const toBeDeleted: number[] = existingTags
+          .filter(et => ArrayUtils.containsNot(tags, et, (a, b) => a.id === b.tag_id))
+          .map(et => et.tag_id);
 
-    return Observable
-      .forkJoin(queries)
-      .flatMap(r => {
-        console.log(r);
+        /**
+         * All links that do not exist have to be created.
+         */
+        const toBeCreated: number[] = tags
+          .filter(t =>
+            ArrayUtils.containsNot(existingTags, t, (a, b) => a.tag_id === b.id)
+          )
+          .map(t => t.id);
 
-        // -- create new links between card and tags
-        const data = tags.map(tag => {
-          return { card_id: card.id, tag_id: tag.id, modificationDate: new Date() };
-        });
+        const os: Observable<void>[] = [];
 
-        if (data.length === 0) {
-          return Observable.of(null);
+        if (toBeDeleted.length > 0) {
+          os.push(this.deleteLinks(card.id, toBeDeleted));
         }
 
-        return Observable.fromPromise(this.dbService
-          .getConnection('card_tag')
-          .insert(data));
+        if (toBeCreated.length > 0) {
+          os.push(this.createLinks(card.id, toBeCreated));
+        }
+
+        if (os.length > 0) {
+          return Observable.forkJoin(os).map(() => null);
+        } else {
+          return Observable.of(null);
+        }
       });
   }
 
@@ -93,5 +116,24 @@ export class TagService {
           .where('name', 'LIKE', '%' + searchValue + '%')
       )
       .map((res: any[]) => res.map(tag => new TagEntity(tag.name, tag.id)));
+  }
+
+  private deleteLinks(cardId: number, toBeDeleted: number[]): Observable<void> {
+    return Observable
+      .fromPromise(
+        this.dbService.getConnection('card_tag')
+          .where('card_id', cardId).and.whereIn('tag_id', toBeDeleted)
+          .del()
+      );
+  }
+
+  private createLinks(cardId: number, toBeCreated: number[]): Observable<void> {
+    const data = toBeCreated.map(tagId => {
+      return { card_id: cardId, tag_id: tagId, modificationDate: new Date() };
+    });
+
+    return Observable.fromPromise(this.dbService
+      .getConnection('card_tag')
+      .insert(data));
   }
 }

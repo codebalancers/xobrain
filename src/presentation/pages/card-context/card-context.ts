@@ -87,6 +87,9 @@ export class CardContextPage implements OnDestroy {
   }
 
   removeTag(tag: TagEntity): void {
+    ArrayUtils.removeElement(this.card.tags, tag);
+    this.card.modified = true;
+    this.editService.emitModified(this.card.modified);
   }
 
   searchTags(): void {
