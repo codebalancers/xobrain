@@ -1,5 +1,5 @@
-* refactor CardService#updateLinks: do not delete, but update & never delete links, put their strength to 0.1
 * use sqlite fts5 for searching
+* link card always from smaller cardId to bigger cardId in order to prevent double links 
 * search form
 * tags form
 * uploads

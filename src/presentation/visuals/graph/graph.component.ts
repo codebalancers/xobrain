@@ -1,21 +1,11 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { GraphOptions, Link, Node } from '../../d3/models';
 import { GraphService } from '../../services/graph.service';
 import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'graph',
-  styles: [':host { display: block; height: 100%}'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [ ':host { display: block; height: 100%}' ],
   template: `
     <svg #svg width="100%" height="100%">
       <g [zoomableOf]="svg">
@@ -32,7 +22,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   nodes: Node[];
   links: Link[];
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize', [ '$event' ])
   onResize(event) {
     this.graphService.update(this.options);
   }
@@ -44,7 +34,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.graphService.createGraph(this.options);
-    this.graphService.ticksSubject$.takeUntil(this.componentDestroyed$).subscribe(() => this.ref.markForCheck());
+    this.graphService.ticksSubject$.takeUntil(this.componentDestroyed$).subscribe(() => this.ref.detectChanges());
   }
 
   ngAfterViewInit() {
