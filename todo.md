@@ -1,5 +1,6 @@
 * use sqlite fts5 for searching
-* link card always from smaller cardId to bigger cardId in order to prevent double links 
+* link card always from smaller cardId to bigger cardId in order to prevent double links
+  * after save update all node that are linked from saved entity 
 * search form
 * tags form
 * uploads

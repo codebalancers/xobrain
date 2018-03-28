@@ -4,7 +4,14 @@ import { Observable } from 'rxjs/Observable';
 import { CardEntity } from '../entity/card.entity';
 import { CardMapper } from './card.mapper';
 import { LangUtils } from '../../util/lang.utils';
+import { AssertUtils } from '../../util/assert.utils';
 
+interface LinkInsert {
+  card1_id: number,
+  card2_id: number,
+  modificationDate: Date,
+  weight: number
+}
 
 @Injectable()
 export class LinkService {
@@ -12,12 +19,32 @@ export class LinkService {
               private cardMapper: CardMapper) {
   }
 
-  public createLink(from: CardEntity, to: CardEntity) {
-    this.dbService
-      .getConnection('card_card')
-      .insert({ card1_id: from.id, card2_id: to.id, modificationDate: new Date(), weight: 1.0 })
-      .then(d => console.log(d));
+  private sortLinks(cardId1: number, cardId2: number): { cardId1: number, cardId2: number } {
+    AssertUtils.isTrue(cardId1 !== cardId2, 'may not link to self');
+
+    let c1 = cardId1;
+    let c2 = cardId2;
+
+    if (cardId1 > cardId2) {
+      c1 = cardId2;
+      c2 = cardId1;
+    }
+
+    return { cardId1: c1, cardId2: c2 };
   }
+
+  private createCreateLinkCmd(cardId1: number, cardId2: number, weight: number): LinkInsert {
+    const links = this.sortLinks(cardId1, cardId2);
+
+    return { card1_id: links.cardId1, card2_id: links.cardId2, modificationDate: new Date(), weight: weight }
+  }
+
+  // public createLink(from: CardEntity, to: CardEntity) {
+  //   this.dbService
+  //     .getConnection('card_card')
+  //     .insert(this.createCreateLinkCmd(from.id, to.id, 1.0))
+  //     .then(d => console.log(d));
+  // }
 
   /**
    * Store/update the specified links for the specified card.
@@ -32,20 +59,24 @@ export class LinkService {
         this.dbService
           .getConnection('card_card')
           .where('card1_id', from.id)
+          .or.where('card1_id', from.id)
       )
-      .flatMap((existingLinks: any[]) => {
+      .flatMap((existingLinks: LinkInsert[]) => {
         /**
          * All existing links from that are not included in the to array have to be deleted.
          */
-        const toBeDeleted: number[] = existingLinks
-          .filter(el => LangUtils.isUndefined(to.find(t => t.card.id === el.card2_id)))
-          .map(el => el.card2_id);
+        const toBeDeleted: LinkInsert[] = existingLinks
+          .filter(el => LangUtils.isUndefined(to.find(
+            t => t.card.id === el.card2_id || t.card.id === el.card1_id
+          )));
 
         /**
-         * All links that do not exist, have to be created.
+         * All links that do not exist have to be created.
          */
         const toBeCreated: { card: CardEntity, weight: number }[] = to
-          .filter(t => LangUtils.isUndefined(existingLinks.find(el => t.card.id === el.card2_id)));
+          .filter(t => LangUtils.isUndefined(existingLinks.find(
+            el => t.card.id === el.card2_id || t.card.id === el.card1_id
+          )));
 
         const os: Observable<void>[] = [];
 
@@ -65,26 +96,26 @@ export class LinkService {
       });
   }
 
-  private deleteLinks(fromId: number, toBeDeleted: number[]): Observable<void> {
+  private deleteLinks(fromId: number, toBeDeleted: LinkInsert[]): Observable<void> {
+    const toBeDeletedLeft: number[] = toBeDeleted.filter(t => t.card2_id === fromId).map(t => t.card1_id);
+    const toBeDeletedRight: number[] = toBeDeleted.filter(t => t.card1_id === fromId).map(t => t.card2_id);
+
     return Observable
       .fromPromise(
         this.dbService
           .getConnection('card_card')
-          .where('card1_id', fromId)
-          .and.whereIn('card2_id', toBeDeleted)
+          .where(function () {
+            this.where('card1_id', fromId).and.whereIn('card2_id', toBeDeletedRight)
+          })
+          .orWhere(function () {
+            this.where('card2_id', fromId).and.whereIn('card1_id', toBeDeletedLeft)
+          })
           .del()
       );
   }
 
   private createLinks(fromId: number, toBeCreated: { card: CardEntity; weight: number }[]): Observable<void> {
-    const data = toBeCreated.map(entry => {
-      return {
-        card1_id: fromId,
-        card2_id: entry.card.id,
-        modificationDate: new Date(),
-        weight: entry.weight
-      };
-    });
+    const data = toBeCreated.map(to => this.createCreateLinkCmd(fromId, to.card.id, to.weight));
 
     return Observable.fromPromise(
       this.dbService

@@ -90,4 +90,20 @@ export class ArrayUtils {
       }
     });
   }
+
+  public static contains<T>(array: T[], testValue: T, equalsPredicate?: (arrayElem: T, testValue: T) => boolean): boolean {
+    let found: T;
+
+    if (LangUtils.isDefined(equalsPredicate)) {
+      found = array.find(a => equalsPredicate(a, testValue));
+    } else {
+      found = array.find(a => a === testValue);
+    }
+
+    return LangUtils.isDefined(found);
+  }
+
+  public static containsNot<T>(array: T[], testValue: T, equalsPredicate?: (arrayElem: T, testValue: T) => boolean): boolean {
+    return !this.contains(array, testValue, equalsPredicate);
+  }
 }

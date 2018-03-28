@@ -8,6 +8,7 @@ import { LinkService } from './link.service';
 import { TagService } from './tag.service';
 import { FileService } from './file.service';
 import { CardMapper } from './card.mapper';
+import { AssertUtils } from '../../util/assert.utils';
 
 @Injectable()
 export class CardService {
@@ -88,15 +89,6 @@ export class CardService {
         .flatMap(d => {
           // set auto-generated id
           card.id = d[ 0 ];
-
-          // create link from parent
-          if (LangUtils.isDefined(card.parent)) {
-            this.linkService.createLink(card.parent, card);
-
-            // update the parent card so it know about its child
-            card.parent.links.push(card);
-          }
-
           return this.updateReferences(card);
         })
         .map(() => {
@@ -193,16 +185,14 @@ export class CardService {
   }
 
   public branchCard(parentCard: CardEntity): Observable<CardEntity> {
+    AssertUtils.isTrue(parentCard.id > 0, 'It is not supported to branch from a non-persisted card');
+
     const c = new CardEntity();
     c.id = -1;
     c.content = '';
     c.title = '';
+    c.links.push(parentCard);
     c.modified = true;
-
-    // make sure the specified parent was persisted
-    if (LangUtils.isDefined(parentCard.id)) {
-      c.parent = parentCard;
-    }
 
     return Observable.of(c);
   }

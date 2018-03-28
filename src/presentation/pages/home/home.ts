@@ -69,6 +69,26 @@ export class HomePage implements OnInit, OnDestroy {
         // publish the new state of the card (now should not be modified anymore)
         this.editService.emitModified(card.modified);
 
+        this.graphService.nodes.forEach(graphNode =>
+          // for each graph node, check whether it contains links to saved card but where card has no link to the graph node
+          graphNode.card.links
+            .filter(nodesLink =>
+              nodesLink.id === card.id
+              && ArrayUtils.containsNot(card.links, nodesLink, (a, b) => a.id === b.id)
+            )
+            .forEach(foundNodesLink => ArrayUtils.removeElement(graphNode.card.links, foundNodesLink))
+        );
+
+        card.links.forEach(link =>
+          this.graphService.nodes
+            .filter(graphNode =>
+              graphNode.card.id === link.id
+              && ArrayUtils.containsNot(graphNode.card.links, link, (a, b) => a.id === b.id)
+            )
+            .forEach(foundNode => foundNode.card.links.push(card))
+        );
+
+
         // before the card was saved, new links or removed links where not shown in the graph
         this.recreateLinks(card);
       });
@@ -109,10 +129,6 @@ export class HomePage implements OnInit, OnDestroy {
             n.card.links
               .filter(l => l.id === this.card.id)
               .forEach(l => ArrayUtils.removeElement(n.card.links, l));
-
-            if (LangUtils.isDefined(n.card.parent) && n.card.parent.id === this.card.id) {
-              n.card.parent = null;
-            }
           });
 
           /**
@@ -128,7 +144,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private recreateLinks(card: CardEntity) {
-    this.graphService.removeLinksOfNode(card.id);
+    this.graphService.removeAllLinksForNode(card.id);
     this.createLinksForCard(this.card);
     this.graphService.refresh();
   }
@@ -152,12 +168,9 @@ export class HomePage implements OnInit, OnDestroy {
       });
     }
 
-    if (LangUtils.isDefined(card.parent)) {
-      // handle branched card (has a parent)
-      links.push(new Link(card.parent.id, card.id));
-
-      // a new card shall be placed near the parent card
-      const parentNode = this.graphService.getNode(card.parent.id);
+    if (card.id < 1 && card.links.length > 0) {
+      // a new card shall be placed near the parent card, which should be the first card in the links array
+      const parentNode = this.graphService.getNode(ArrayUtils.getFirstElement(card.links).id);
       nc.x = parentNode.x;
       nc.y = parentNode.y;
     }
