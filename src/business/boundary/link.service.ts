@@ -39,13 +39,6 @@ export class LinkService {
     return { card1_id: links.cardId1, card2_id: links.cardId2, modificationDate: new Date(), weight: weight }
   }
 
-  // public createLink(from: CardEntity, to: CardEntity) {
-  //   this.dbService
-  //     .getConnection('card_card')
-  //     .insert(this.createCreateLinkCmd(from.id, to.id, 1.0))
-  //     .then(d => console.log(d));
-  // }
-
   /**
    * Store/update the specified links for the specified card.
    *

@@ -20,25 +20,6 @@ export class CardService {
               private fileService: FileService) {
   }
 
-  // // TODO to be removed
-  // public findParents(card: CardEntity): Observable<CardEntity[]> {
-  //   return Observable
-  //     .fromPromise(
-  //       this.dbService.getConnection('card')
-  //         .innerJoin('card_card', 'card_card.card1_id', 'card.id')
-  //         .where('card_card.card2_id', card.id)
-  //     )
-  //     .flatMap((res: any[]) => {
-  //       const os: Observable<CardEntity>[] = res.map(r => this.mapCard(r));
-  //
-  //       if (os.length === 0) {
-  //         return Observable.of([]);
-  //       } else {
-  //         return Observable.forkJoin(os);
-  //       }
-  //     });
-  // }
-
   public updateLinks(card: CardEntity): Observable<CardEntity> {
     if (card.id < 1) {
       return Observable.of(card);
