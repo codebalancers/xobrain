@@ -118,13 +118,31 @@ export class TagService {
       .map((res: any[]) => res.map(tag => new TagEntity(tag.name, tag.id)));
   }
 
+  /**
+   * Delete the specified links and also delete the tags if they are not referenced anymore from another card.
+   *
+   * @param {number} cardId card for which the links to the tags shall be deleted
+   * @param {number[]} toBeDeleted list of tags id which the links shall be deleted
+   * @return {Observable<void>}
+   */
   private deleteLinks(cardId: number, toBeDeleted: number[]): Observable<void> {
     return Observable
       .fromPromise(
         this.dbService.getConnection('card_tag')
           .where('card_id', cardId).and.whereIn('tag_id', toBeDeleted)
           .del()
-      );
+      )
+      .flatMap(() => Observable.fromPromise(
+        this.dbService.getConnection('tag')
+          .leftJoin('card_tag', 'tag.id', 'card_tag.tag_id')
+          .whereNull('card_tag.tag_id')
+          .and.whereIn('tag.id', toBeDeleted)
+      ))
+      .flatMap((res: any[]) => Observable.fromPromise(
+        this.dbService.getConnection('tag')
+          .whereIn('id', res.map(r => r.id))
+          .del()
+      ));
   }
 
   private createLinks(cardId: number, toBeCreated: number[]): Observable<void> {
