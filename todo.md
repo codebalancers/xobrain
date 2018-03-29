@@ -1,13 +1,12 @@
 * use sqlite fts5 for searching
-* link card always from smaller cardId to bigger cardId in order to prevent double links
-  * after save update all node that are linked from saved entity 
+* fix first click issue (click event propagation)
 * search form
-* tags form
 * uploads
 * on select of node, highlight children/parents
 
 # Future
 * DB migrations
+* Preferences etc. dialogs
 
 # Resources
 * https://github.com/maximegris/angular-electron

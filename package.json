@@ -21,7 +21,7 @@
     "build.dev.w": "concurrently --kill-others \"npm run ionic:build.w\" \"npm run electron:build.w\"",
     "build.dev": "npm run ionic:build && npm run electron:build",
     "build.prod": "npm run ionic:build && npm run electron:build",
-    "runApp": "electron main.js",
+    "app": "electron main.js",
     "start": "npm run build.dev && electron main.js",
     "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
     "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName='CE' --version-string.FileDescription='CE' --version-string.ProductName='Xobrain'",
