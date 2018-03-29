@@ -1,7 +1,8 @@
 # Xobrain
 
-Contextual desktop wiki
+Cross platform contextual desktop wiki for MacOS, Windows and Linux.  
 
+![alt text](https://raw.githubusercontent.com/codebalancers/xobrain/master/docs/xobrain.png)
 
 ## Build and start
 Prepare environment: The rebuild step is necessary to provide the sqlite libraries to electron. This only needs to be done once.
