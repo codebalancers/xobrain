@@ -3,10 +3,12 @@
 * search form
 * uploads
 * on select of node, highlight children/parents
+* packaging of releases
 
 # Future
 * DB migrations
 * Preferences etc. dialogs
+* on-mouse-over of node show add button
 
 # Resources
 * https://github.com/maximegris/angular-electron
