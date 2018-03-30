@@ -1,0 +1,29 @@
+{
+  "appId": "com.codebalancers.xobrain",
+  "productName": "xobrain",
+  "directories": {
+    "output": "release-builds"
+  },
+  "files": [
+    "www/**/*",
+    "main.js"
+  ],
+  "win": {
+    "icon": "www/assets/icon",
+    "target": [
+      "portable"
+    ]
+  },
+  "mac": {
+    "icon": "www/assets/icon",
+    "target": [
+      "dmg"
+    ]
+  },
+  "linux": {
+    "icon": "www/assets/icon",
+    "target": [
+      "AppImage"
+    ]
+  }
+}

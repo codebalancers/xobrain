@@ -1,7 +1,6 @@
 import { Accelerator, app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
 import { join as pJoin } from 'path';
 import { format as urlFormat } from 'url';
-import 'reflect-metadata';
 import * as knex from 'knex';
 import { Config } from 'knex';
 
@@ -78,10 +77,13 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 function exportConfig(): Config {
+  const userData = app.getPath('userData');
+  const dbPath = userData + '/xobrain.sqlite';
+
   return {
     client: 'sqlite3',
     connection: {
-      filename: './xobrain.sqlite'
+      filename: dbPath
     },
     pool: {
       afterCreate: (conn, cb) => {
