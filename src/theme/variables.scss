@@ -88,3 +88,24 @@ $colors: (
 
 @import "roboto";
 @import "noto-sans";
+
+@mixin transition($trans...) {
+  -webkit-transition: $trans;
+  -moz-transition: $trans;
+  -ms-transition: $trans;
+  -o-transition: $trans;
+  transition: $trans;
+}
+
+@mixin transition-unbind() {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+
+@mixin scale($scale-value: 1.1, $duration: 1s) {
+  @include transition($duration transform ease);
+  transform: scale($scale-value);
+}
