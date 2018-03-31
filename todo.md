@@ -1,13 +1,5 @@
-* fix first click issue (click event propagation)
-* on creation of node, switch to edit tab
-* search form
-* uploads
-* on select of node, highlight children/parents
-
 # Future
 * Preferences etc. dialogs
-* use sqlite fts5 for searching
-* auto-update with electron builder
 
 # Resources
 * https://github.com/maximegris/angular-electron
