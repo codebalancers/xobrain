@@ -19,16 +19,16 @@
           </button>
 
           <ion-fab-list side="bottom">
-            <button ion-fab (click)="saveCard()">
+            <button ion-fab (click)="saveCard()" [tooltip]="'Save card'" event="hover" navTooltip>
               <ion-icon name="checkbox"></ion-icon>
             </button>
-            <button ion-fab (click)="branchCard()">
+            <button ion-fab (click)="branchCard()" [tooltip]="'Branch new card'" event="hover" navTooltip>
               <ion-icon name="git-merge"></ion-icon>
             </button>
-            <button ion-fab (click)="addNewCard()">
+            <button ion-fab (click)="addNewCard()"  [tooltip]="'Add new unconnected card'" event="hover" navTooltip>
               <ion-icon name="add"></ion-icon>
             </button>
-            <button ion-fab (click)="deleteCard()">
+            <button ion-fab (click)="deleteCard()" [tooltip]="'Delete current card'" event="hover" navTooltip>
               <ion-icon name="remove-circle"></ion-icon>
             </button>
           </ion-fab-list>

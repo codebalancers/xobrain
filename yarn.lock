@@ -3873,6 +3873,10 @@ ionic-angular@3.9.2:
   version "3.9.2"
   resolved "https://registry.yarnpkg.com/ionic-angular/-/ionic-angular-3.9.2.tgz#75053e4a422aaae7d7cd668cc92cfd5cb29d38cc"
 
+ionic-tooltips@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ionic-tooltips/-/ionic-tooltips-2.0.1.tgz#1c293fd383f2ae901d020ebf15e068120579fa79"
+
 ionicons@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ionicons/-/ionicons-3.0.0.tgz#40b8daf4fd7a31150bd002160f66496e22a98c3c"

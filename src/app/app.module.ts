@@ -21,6 +21,8 @@ import { FileService } from '../business/boundary/file.service';
 import { CardMapper } from '../business/boundary/card.mapper';
 import { KeyService } from '../presentation/services/key.service';
 import { WindowKeyNavListenerDirective } from '../business/control/window-key-nav-listener.directive';
+import { TooltipsModule } from 'ionic-tooltips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -38,6 +40,8 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
   ],
   imports: [
     BrowserModule,
+    TooltipsModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [ IonicApp ],
