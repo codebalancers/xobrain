@@ -7,7 +7,7 @@
       "dom"
     ]
   },
-  "includes": [
+  "include": [
     "migrations/**/*"
   ],
   "files": [

@@ -94,7 +94,8 @@ function exportConfig(): Config {
     debug: true,
     migrations: {
       tableName: 'migrations',
-      loadExtensions: ['.js']
+      loadExtensions: ['.js'],
+      directory: pJoin(__dirname, 'migrations')
     } as any
   };
 }

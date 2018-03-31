@@ -59,13 +59,17 @@ const init_sql_6 = `
   );
   `;
 
-exports.up = (knex: knex, Promise: typeof Promise): Promise => {
+exports.up = (knex: knex): Promise<any> => {
   return Promise.all([
-    this.knex.raw(init_sql_1),
-    this.knex.raw(init_sql_2),
-    this.knex.raw(init_sql_3),
-    this.knex.raw(init_sql_4),
-    this.knex.raw(init_sql_5),
-    this.knex.raw(init_sql_6),
+    knex.raw(init_sql_1),
+    knex.raw(init_sql_2),
+    knex.raw(init_sql_3),
+    knex.raw(init_sql_4),
+    knex.raw(init_sql_5),
+    knex.raw(init_sql_6),
   ]);
+};
+
+exports.down = (knex: knex): Promise<any> => {
+  throw new Error('back migration is not supported');
 };
