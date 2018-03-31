@@ -11,7 +11,9 @@ export class Node implements d3.SimulationNodeDatum {
   fx?: number | null;
   fy?: number | null;
 
-  linkCount: number = 0;
+  get linkCount(): number {
+    return this.card.links.length;
+  }
 
   constructor(public card: CardEntity) {
   }
@@ -30,6 +32,6 @@ export class Node implements d3.SimulationNodeDatum {
 
   get color() {
     let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
-    return APP_CONFIG.SPECTRUM[index];
+    return APP_CONFIG.SPECTRUM[ index ];
   }
 }

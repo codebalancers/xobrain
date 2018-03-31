@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import { Subject } from 'rxjs/Subject';
 
 const FORCES = {
-  LINKS: 1 / 50,
+  LINKS: 0.1, // / 50,
   COLLISION: 0.7,
   CHARGE: -1
 };
@@ -62,8 +62,9 @@ export class ForceDirectedGraph {
       .force('collide',
         d3.forceCollide()
           .strength(FORCES.COLLISION)
-          .iterations(70)
-          .radius(d => d['r'] + 5).iterations(2)
+          .iterations(1)
+          .radius(d => d['r'] + 30)
+          .iterations(2)
       );
 
     // Connecting the d3 ticker to an angular event emitter
