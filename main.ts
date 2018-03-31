@@ -29,6 +29,7 @@ const mainMenuTemplate: MenuItemConstructorOptions[] = [
   {
     label: 'File',
     submenu: [
+      { label: 'Save', accelerator: 'CmdOrCtrl+S' as Accelerator },
       {
         label: 'Quit',
         accelerator: (process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q') as Accelerator,
