@@ -59,4 +59,10 @@ export class EditService implements OnDestroy {
         this.graphService.pushElements(nodes, links);
       });
   }
+
+  public branchCard(card: CardEntity): void {
+    this.cardService
+      .branchCard(card)
+      .subscribe(newCard => this.cardSelected(newCard));
+  }
 }

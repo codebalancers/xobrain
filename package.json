@@ -10,6 +10,9 @@
   },
   "private": true,
   "main": "./main.js",
+  "config": {
+    "ionic_sass": "./config/sass.config.js"
+  },
   "scripts": {
     "postinstall": "npm run electron:rebuild",
     "clean": "ionic-app-scripts clean",

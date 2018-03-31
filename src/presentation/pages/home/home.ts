@@ -95,9 +95,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   branchCard(): void {
-    this.cardService
-      .branchCard(this.card)
-      .subscribe(newCard => this.editService.cardSelected(newCard));
+    this.editService.branchCard(this.card);
   }
 
   addNewCard(): void {

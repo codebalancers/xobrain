@@ -7,26 +7,38 @@ import { CardEntity } from '../../../../business/entity/card.entity';
 @Component({
   selector: '[nodeVisual]',
   template: `
-    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'" (click)="handleClick()">
-      <svg:circle
-        class="node"
-        [ngClass]="{'node': !selected, 'selected': selected}"
-        [attr.fill]="node.color"
-        cx="0"
-        cy="0"
-        [attr.r]="node.r">
-      </svg:circle>
-      <svg:text
-        class="node-name"
-        [attr.font-size]="node.fontSize">
-        {{node.card.title}}
-      </svg:text>
+    <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
+           (mouseenter)="handleMouseEnter()"
+           (mouseleave)="handleMouseLeave()">
+      <svg:g (click)="handleClick()">
+        <svg:circle
+          class="node"
+          [ngClass]="{'node': !selected, 'selected': selected}"
+          [attr.fill]="node.color"
+          cx="0"
+          cy="0"
+          [attr.r]="node.r">
+        </svg:circle>
+        <svg:text
+          class="node-name"
+          [attr.font-size]="node.fontSize">
+          {{node.card.title}}
+        </svg:text>
+      </svg:g>
+
+      <svg:g *ngIf="showAdd" transform="translate(18,-18)" (click)="handleAddClick()">
+        <svg:circle class="addButton" r="20">
+        </svg:circle>
+        <svg:text class="addText">+</svg:text>
+      </svg:g>
+
     </svg:g>
   `
 })
 export class NodeVisualComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
   selected: boolean = false;
+  showAdd: boolean = false;
 
   @Input('nodeVisual') node: Node;
 
@@ -41,6 +53,18 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
 
   handleClick() {
     this.editService.cardSelected(this.node.card)
+  }
+
+  handleAddClick() {
+    this.editService.branchCard(this.node.card);
+  }
+
+  handleMouseEnter() {
+    this.showAdd = true;
+  }
+
+  handleMouseLeave() {
+    this.showAdd = false;
   }
 
   ngOnDestroy(): void {
