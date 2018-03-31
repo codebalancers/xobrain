@@ -30,9 +30,14 @@ export class EditService implements OnDestroy {
     this._cardModifiedSubject.next(modified);
   }
 
-  public cardSelected(card: CardEntity): void {
+  /**
+   *
+   * @param {CardEntity} card
+   * @param {boolean} force force emitting an event even if card id has not changed
+   */
+  public cardSelected(card: CardEntity, force = false): void {
     // do not emit an event if selection has not changed
-    if (this._cardSelectedSubject.getValue().id == card.id) {
+    if (force === false && this._cardSelectedSubject.getValue().id == card.id) {
       return;
     }
 
@@ -63,6 +68,6 @@ export class EditService implements OnDestroy {
   public branchCard(card: CardEntity): void {
     this.cardService
       .branchCard(card)
-      .subscribe(newCard => this.cardSelected(newCard));
+      .subscribe(newCard => this.cardSelected(newCard, true));
   }
 }
