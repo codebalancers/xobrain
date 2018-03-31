@@ -6,7 +6,8 @@
   },
   "files": [
     "www/**/*",
-    "main.js"
+    "main.js",
+    "migrations/*.js"
   ],
   "win": {
     "icon": "www/assets/icon",

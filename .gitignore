@@ -8,6 +8,7 @@ build/Release
 # electron
 release-builds/
 main.js
+migrations/*.js
 
 # ionic
 *~

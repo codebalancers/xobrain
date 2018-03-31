@@ -42,13 +42,13 @@ const mainMenuTemplate: MenuItemConstructorOptions[] = [
   {
     label: 'Edit',
     submenu: [
-      { label: 'Undo', accelerator: 'CmdOrCtrl+Z' as Accelerator, selector: 'undo:' },
-      { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z' as Accelerator, selector: 'redo:' },
+      { label: 'Undo', accelerator: 'CmdOrCtrl+Z' as Accelerator, role: 'undo' },
+      { label: 'Redo', accelerator: 'Shift+CmdOrCtrl+Z' as Accelerator, role: 'redo' },
       { type: 'separator' },
-      { label: 'Cut', accelerator: 'CmdOrCtrl+X' as Accelerator, selector: 'cut:' },
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C' as Accelerator, selector: 'copy:' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V' as Accelerator, selector: 'paste:' },
-      { label: 'Select All', accelerator: 'CmdOrCtrl+A' as Accelerator, selector: 'selectAll:' }
+      { label: 'Cut', accelerator: 'CmdOrCtrl+X' as Accelerator, role: 'cut' },
+      { label: 'Copy', accelerator: 'CmdOrCtrl+C' as Accelerator, role: 'copy' },
+      { label: 'Paste', accelerator: 'CmdOrCtrl+V' as Accelerator, role: 'paste' },
+      { label: 'Select All', accelerator: 'CmdOrCtrl+A' as Accelerator, role: 'selectAll' }
     ]
   }
 ];
@@ -91,6 +91,10 @@ function exportConfig(): Config {
         conn.run('PRAGMA foreign_keys = ON', cb);
       }
     },
-    debug: true
+    debug: true,
+    migrations: {
+      tableName: 'migrations',
+      loadExtensions: ['.js']
+    } as any
   };
 }
