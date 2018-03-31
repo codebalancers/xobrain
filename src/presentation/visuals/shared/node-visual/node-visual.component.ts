@@ -10,7 +10,7 @@ import { CardEntity } from '../../../../business/entity/card.entity';
     <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
            (mouseenter)="handleMouseEnter()"
            (mouseleave)="handleMouseLeave()">
-      <svg:g (click)="handleClick()" class="nodeContent">
+      <svg:g (mousedown)="handleClick()" class="nodeContent">
         <svg:circle
           [ngClass]="{'node': !selected, 'selected': selected}"
           [attr.fill]="node.color"
@@ -51,7 +51,7 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
   }
 
   handleClick() {
-    this.editService.cardSelected(this.node.card)
+    this.editService.cardSelected(this.node.card);
   }
 
   handleAddClick() {

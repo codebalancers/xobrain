@@ -1,4 +1,12 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { GraphOptions, Link, Node } from '../../d3/models';
 import { GraphService } from '../../services/graph.service';
 import { Subject } from 'rxjs/Subject';
