@@ -5,6 +5,13 @@ Upload attachments
 <ion-list>
   <ion-item *ngFor="let file of card?.files">
     <ion-icon name="leaf" item-start></ion-icon>
-    {{file.name}} ({{file.size}}) {{file.mimeType}}
+
+    <p>
+      {{file.name}} ({{file.size}}) {{file.mimeType}}
+    </p>
+
+    <button ion-button clear item-end (click)="removeFile(file)">
+      Delete
+    </button>
   </ion-item>
 </ion-list>
