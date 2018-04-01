@@ -1,0 +1,31 @@
+file-upload {
+
+  .noHighlight {
+    background-color: #eee;
+  }
+
+  .highlight {
+    background: #999
+  }
+
+  .dropzone {
+    min-height: 400px;
+    min-width: 400px;
+    display: table;
+    width: 100%;
+    border: dotted 1px #aaa;
+  }
+
+  .text-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .centered {
+    font-family: sans-serif;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+  }
+
+}
