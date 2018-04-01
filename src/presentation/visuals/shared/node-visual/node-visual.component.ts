@@ -25,7 +25,7 @@ import { CardEntity } from '../../../../business/entity/card.entity';
         </svg:text>
       </svg:g>
 
-      <svg:g *ngIf="showAdd" transform="translate(18,-18)" (click)="handleAddClick()">
+      <svg:g *ngIf="showAdd" transform="translate(18,-18)" (mousedown)="handleAddClick()">
         <svg:circle class="addButton" r="20">
         </svg:circle>
         <svg:text class="addText">+</svg:text>
