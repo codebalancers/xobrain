@@ -4,6 +4,7 @@ import { EditService } from '../../services/edit.service';
 import { Subject } from 'rxjs/Subject';
 import { CardEntity } from '../../../business/entity/card.entity';
 import { FileEntity } from '../../../business/entity/file.entity';
+import { ArrayUtils } from '../../../util/array.utils';
 
 @IonicPage()
 @Component({
@@ -42,5 +43,12 @@ export class CardAttachmentPage implements OnDestroy {
       this.card.modified = true;
       this.editService.emitModified(this.card.modified);
     }
+  }
+
+  removeFile(file: FileEntity) {
+    ArrayUtils.removeElement(this.card.files, file);
+
+    this.card.modified = true;
+    this.editService.emitModified(this.card.modified);
   }
 }
