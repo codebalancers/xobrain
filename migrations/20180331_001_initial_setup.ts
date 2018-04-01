@@ -13,7 +13,10 @@ const init_sql_2 = `
   CREATE TABLE IF NOT EXISTS file(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     modificationDate DATE NOT NULL,
-    data BLOB
+    name CHAR(100),
+    size INTEGER NOT NULL,
+    mimeType CHAR(100),
+    fileName CHAR(100) NOT NULL
   );
   `;
 
