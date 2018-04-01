@@ -5,7 +5,7 @@ export class FileEntity {
   name: string;
   size: number;
   mimeType: string;
-  hash: string;
+  fileName: string;
 
   thumbnailHash: string;
 
