@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Component({
   selector: 'file-upload',
@@ -12,6 +12,9 @@ import { Component, HostListener } from '@angular/core';
 export class FileUploadComponent {
   highlight = false;
 
+  @Output()
+  filesUpload = new EventEmitter<FileList>();
+
   @HostListener('dragover', [ '$event' ])
   onDragOver(evt) {
     evt.preventDefault();
@@ -24,10 +27,8 @@ export class FileUploadComponent {
   onDragLeave(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    //do some stuff
 
     this.highlight = false;
-
   }
 
   @HostListener('drop', [ '$event' ])
@@ -35,10 +36,11 @@ export class FileUploadComponent {
     evt.preventDefault();
     evt.stopPropagation();
 
-    let files = evt.dataTransfer.files;
+    let files: FileList = evt.dataTransfer.files;
+
     if (files.length > 0) {
+      this.filesUpload.emit(files);
       this.highlight = false;
     }
   }
-
 }
