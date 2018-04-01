@@ -16,6 +16,8 @@ export class FileService {
 
   public updateFiles(card: CardEntity, files: FileEntity[]): Observable<void> {
     console.error('NOT YET IMPLEMENTED');
+    // const fr = new FileReader();
+    // const fileArray = fr.readAsArrayBuffer(f);
     return Observable.of(null);
   }
 }
