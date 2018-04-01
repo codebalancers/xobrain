@@ -1,4 +1,5 @@
 file-upload {
+  display: inline-block;
 
   .noHighlight {
     background-color: #eee;
@@ -9,11 +10,10 @@ file-upload {
   }
 
   .dropzone {
-    min-height: 400px;
-    min-width: 400px;
     display: table;
     width: 100%;
-    border: dotted 1px #aaa;
+    height: 100%;
+    border: dashed 2px #aaa;
   }
 
   .text-wrapper {

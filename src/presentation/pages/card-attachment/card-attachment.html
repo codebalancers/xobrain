@@ -1,3 +1,10 @@
 Upload attachments
 
 <file-upload (filesUpload)="handleFiles($event)"></file-upload>
+
+<ion-list>
+  <ion-item *ngFor="let file of card?.files">
+    <ion-icon name="leaf" item-start></ion-icon>
+    {{file.name}} ({{file.size}}) {{file.mimeType}}
+  </ion-item>
+</ion-list>

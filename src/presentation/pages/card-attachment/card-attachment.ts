@@ -27,8 +27,14 @@ export class CardAttachmentPage implements OnDestroy {
 
   handleFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+
       const fe = new FileEntity();
-      fe.fileUpload = files.item(i);
+      fe.fileUpload = file;
+      fe.name = file.name;
+      fe.size = file.size;
+      fe.mimeType = file.type;
+
       this.card.files.push(fe);
     }
 
