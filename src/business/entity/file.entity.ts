@@ -7,7 +7,7 @@ export class FileEntity {
   mimeType: string;
   fileName: string;
 
-  thumbnailHash: string;
+  // thumbnail: string;
 
   /**
    * Transient field used to store a file that is going to be uploaded.

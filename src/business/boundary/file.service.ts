@@ -26,8 +26,13 @@ export class FileService {
   }
 
   public getFiles(cardId: number): Observable<FileEntity[]> {
-    console.error('NOT YET IMPLEMENTED');
-    return Observable.of([]);
+    return Observable
+      .fromPromise(
+        this.dbService.getConnection('file')
+          .innerJoin('card_file', 'card_file.file_id', 'file.id')
+          .where('card_file.card_id', cardId)
+      )
+      .map((res: any[]) => res.map(r => this.mapFile(r)));
   }
 
   public updateFiles(card: CardEntity, files: FileEntity[]): Observable<void> {
@@ -125,16 +130,18 @@ export class FileService {
         const os: Observable<void>[] = toBeDeleted.map(fileId =>
           this.getFile(fileId)
             .map((file: FileEntity) => {
+              console.log('delete file', file);
+
               // -- delete file from file system
               const dest = pJoin(this.attachmentsPath, file.fileName);
-              fs.unlink(dest);
+              fs.unlink(dest, res => console.log(res));
               return null;
             })
             .flatMap(() =>
               // -- delete file from db
               Observable.fromPromise(
                 this.dbService.getConnection('file')
-                  .where('file_id', fileId)
+                  .where('id', fileId)
                   .del()
               )
             )
@@ -158,19 +165,19 @@ export class FileService {
   private getFile(fileId: number): Observable<FileEntity> {
     return Observable
       .fromPromise(
-        this.dbService.getConnection('file')
-          .where('file_id', fileId)
-          .del()
+        this.dbService.getConnection('file').where('id', fileId)
       )
-      .map(res => {
-        const f = new FileEntity();
-        f.id = res.id;
-        f.name = res.name;
-        f.fileName = res.fileName;
-        f.mimeType = res.mimeType;
-        f.size = res.size;
+      .map(res => this.mapFile(ArrayUtils.getFirstElement(res)));
+  }
 
-        return f;
-      });
+  private mapFile(res: any): FileEntity {
+    const f = new FileEntity();
+    f.id = res.id;
+    f.name = res.name;
+    f.fileName = res.fileName;
+    f.mimeType = res.mimeType;
+    f.size = res.size;
+
+    return f;
   }
 }
