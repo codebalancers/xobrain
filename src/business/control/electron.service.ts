@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import * as fs from 'fs';
 
 @Injectable()
 export class ElectronService {
   private _electron = (<any>window).require('electron');
-  private _fs = (<any>window).require('fs') as fs;
+  private _fs = (<any>window).require('fs');
 
   public getRemote() {
     return this._electron.remote;
@@ -14,7 +13,7 @@ export class ElectronService {
     return this._electron;
   }
 
-  public getFs(): fs {
+  public getFs(): any {
     return this._fs;
   }
 }

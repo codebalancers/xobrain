@@ -22,7 +22,7 @@ export class FileService {
     this.attachmentsPath = pJoin(userData, 'attachments');
 
     const fs = this.electronService.getFs();
-    fs.mkdir(this.attachmentsPath);
+    fs.mkdir(this.attachmentsPath, res => console.log(res));
   }
 
   public getFiles(cardId: number): Observable<FileEntity[]> {
