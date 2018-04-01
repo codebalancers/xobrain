@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { CardEntity } from '../../../business/entity/card.entity';
 import { FileEntity } from '../../../business/entity/file.entity';
 import { ArrayUtils } from '../../../util/array.utils';
+import { UuidUtils } from '../../../util/uuid.utils';
 
 @IonicPage()
 @Component({
@@ -35,6 +36,7 @@ export class CardAttachmentPage implements OnDestroy {
       fe.name = file.name;
       fe.size = file.size;
       fe.mimeType = file.type;
+      fe.fileName = UuidUtils.uuid();
 
       this.card.files.push(fe);
     }
