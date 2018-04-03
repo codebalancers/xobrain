@@ -99,8 +99,13 @@ export class CardContextPage implements OnDestroy {
       this.tagService
         .searchTags(this.searchTagValue)
         .map((tags: TagEntity[]) => {
-          // add the search string itself to the beginning of the list, so a new tags can be created
-          tags.unshift(new TagEntity(this.searchTagValue));
+          /**
+           * add the search string itself to the beginning of the list, so a new tags can be created, but do that
+           * only when the result does not already contain the searchTagValue
+           */
+          if (ArrayUtils.containsNot(tags, this.searchTagValue, (a, b) => a.name == b)) {
+            tags.unshift(new TagEntity(this.searchTagValue));
+          }
           return tags;
         })
         .subscribe(tags => this.foundTags = tags);

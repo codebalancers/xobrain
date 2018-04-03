@@ -1,3 +1,6 @@
+* auto-save
+* on-select hide nodes
+
 # Future
 * Preferences etc. dialogs
 

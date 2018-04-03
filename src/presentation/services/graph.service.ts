@@ -51,7 +51,7 @@ export class GraphService implements OnDestroy {
 
   public createGraph(options: GraphOptions): void {
     this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, options);
-    // this.graph.ticker.subscribe(() => this._ticksSubject.next());
+    this.graph.ticker.subscribe(() => this._ticksSubject.next());
   }
 
   public update(options: GraphOptions): void {
