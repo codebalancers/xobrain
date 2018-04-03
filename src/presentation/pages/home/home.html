@@ -6,8 +6,18 @@
   </ion-navbar>
 </ion-header>
 
+<div style="position: relative;
+    top: 50px;
+    height: 50%;
+    width: 100%;
+    color: #c94545;
+    background: yellow;
+    z-index: 900;">
+  Some search result
+</div>
+
 <ion-content>
-  <ion-grid no-padding >
+  <ion-grid no-padding>
     <ion-row>
 
       <ion-col col-8>
@@ -25,7 +35,7 @@
             <button ion-fab (click)="branchCard()" [tooltip]="'Branch new card'" event="hover" navTooltip>
               <ion-icon name="git-merge"></ion-icon>
             </button>
-            <button ion-fab (click)="addNewCard()"  [tooltip]="'Add new unconnected card'" event="hover" navTooltip>
+            <button ion-fab (click)="addNewCard()" [tooltip]="'Add new unconnected card'" event="hover" navTooltip>
               <ion-icon name="add"></ion-icon>
             </button>
             <button ion-fab (click)="deleteCard()" [tooltip]="'Delete current card'" event="hover" navTooltip>
