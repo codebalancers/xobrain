@@ -1,12 +1,14 @@
-<form>
-  <ion-list>
-    <ion-item>
-      <ion-label color="primary" stacked>Title</ion-label>
-      <ion-input [(ngModel)]="card.title" placeholder="Title" name="title" (ionChange)="modified()"></ion-input>
-    </ion-item>
+<ion-content overflow-scroll="true">
+  <form>
+    <ion-list>
+      <ion-item>
+        <ion-label color="primary" stacked>Title</ion-label>
+        <ion-input [(ngModel)]="card.title" placeholder="Title" name="title" (ionChange)="modified()"></ion-input>
+      </ion-item>
 
-    <div>
-      <md-editor item-content [(model)]="card.content" (change)="modified()"></md-editor>
-    </div>
-  </ion-list>
-</form>
+      <div>
+        <md-editor item-content [(model)]="card.content" (change)="modified()"></md-editor>
+      </div>
+    </ion-list>
+  </form>
+</ion-content>

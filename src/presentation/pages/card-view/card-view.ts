@@ -13,7 +13,7 @@ export class CardViewPage implements OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
   card: CardEntity;
 
-  constructor(editService: EditService) {
+  constructor(private editService: EditService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
       .subscribe(card => this.card = card);
@@ -22,5 +22,9 @@ export class CardViewPage implements OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed$.next();
     this.componentDestroyed$.complete();
+  }
+
+  selectLink(link: CardEntity) {
+    this.editService.cardSelected(link);
   }
 }
