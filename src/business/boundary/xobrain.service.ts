@@ -44,6 +44,9 @@ export class XobrainService implements OnDestroy {
     this.cardService
       .getInitialCard()
       .subscribe(card => this.editService.cardSelected(card));
+
+    // notify about modification status of current card
+    this.editService.emitModified(this.card.modified);
   }
 
   ngOnDestroy(): void {
