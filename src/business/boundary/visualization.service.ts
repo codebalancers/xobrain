@@ -12,7 +12,14 @@ export class VisualizationService {
   constructor(private graphService: GraphService) {
   }
 
+  /**
+   * Effectively remove all existing links to the specified cards and recreate the links.
+   *
+   * @param {CardEntity} card
+   */
   public recreateLinks(card: CardEntity) {
+    console.log('recreateLinks', card);
+
     this.graphService.removeAllLinksForNode(card.id);
     this.createLinksForCard(card);
     this.graphService.refresh();
@@ -24,6 +31,8 @@ export class VisualizationService {
    * @param {CardEntity} card
    */
   public createLinksForCard(card: CardEntity): void {
+    console.log('createLinksForCard', card);
+
     const nodes: Node[] = [];
     const links: Link[] = [];
 

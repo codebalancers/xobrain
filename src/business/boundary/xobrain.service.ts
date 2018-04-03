@@ -20,19 +20,24 @@ export class XobrainService implements OnDestroy {
               private graphService: GraphService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
-      .subscribe((card: CardEntity) => {
-        // the previous card was an unsaved that is now deselected, in that case the previous card is removed from the graph
-        if (LangUtils.isDefined(this.card) && this.card.id < 1) {
+      .subscribe((selectedCard: CardEntity) => {
+        this.visualizationService.createLinksForCard(selectedCard);
+
+        // -- if the previous card was modified, auto-save that card and update the linked cards
+        if (LangUtils.isDefined(this.card) && this.card.modified === true) {
+          this.cardService
+            .save(this.card)
+            .subscribe((savedCard) => {
+              this.updateReferencesForCard(savedCard);
+              return console.log('card was auto-saved');
+            });
+        }
+        // -- the previous card was an unsaved that is now deselected, in that case the previous card is removed from the graph
+        else if (LangUtils.isDefined(this.card) && this.card.id < 1) {
           this.graphService.removeNode(this.card.id);
         }
 
-        // if the previous card was modified, auto-save that card
-        if (LangUtils.isDefined(this.card) && this.card.modified === true) {
-          this.cardService.save(this.card).subscribe(() => console.log('card was auto-saved'));
-        }
-
-        this.card = card;
-        this.visualizationService.createLinksForCard(card);
+        this.card = selectedCard;
       });
 
     // init application
@@ -46,35 +51,14 @@ export class XobrainService implements OnDestroy {
     this.componentDestroyed$.complete();
   }
 
-  saveCard(): void {
+  public saveCard(): void {
     this.cardService
       .save(this.card)
       .subscribe((card) => {
         // publish the new state of the card (now should not be modified anymore)
         this.editService.emitModified(card.modified);
 
-        this.graphService.nodes.forEach(graphNode =>
-          // for each graph node, check whether it contains links to saved card but where card has no link to the graph node
-          graphNode.card.links
-            .filter(nodesLink =>
-              nodesLink.id === card.id
-              && ArrayUtils.containsNot(card.links, nodesLink, (a, b) => a.id === b.id)
-            )
-            .forEach(foundNodesLink => ArrayUtils.removeElement(graphNode.card.links, foundNodesLink))
-        );
-
-        card.links.forEach(link =>
-          this.graphService.nodes
-            .filter(graphNode =>
-              graphNode.card.id === link.id
-              && ArrayUtils.containsNot(graphNode.card.links, link, (a, b) => a.id === b.id)
-            )
-            .forEach(foundNode => foundNode.card.links.push(card))
-        );
-
-
-        // before the card was saved, new links or removed links where not shown in the graph
-        this.visualizationService.recreateLinks(card);
+        this.updateReferencesForCard(card);
       });
   }
 
@@ -122,5 +106,45 @@ export class XobrainService implements OnDestroy {
      * id (-1) but a different parent, therefore, we need to enforce the cardSelected event
      */
     this.cardService.branchCard(card).subscribe(newCard => this.editService.cardSelected(newCard, true));
+  }
+
+  /**
+   * After a card was saved, the saved card contains links to other cards, the other cards do not know yet. Also links to other cards may
+   * have been deleted and the previously linked cards still maintain the deleted links. For both situations we must update all links
+   * to the specified card.
+   *
+   * @param {CardEntity} card that contains recently modified links
+   */
+  private updateReferencesForCard(card: CardEntity) {
+    /**
+     * remove all outdated links from other cards to the specified card
+     */
+    this.graphService.nodes.forEach(graphNode =>
+      // for each graph node, check whether it contains links to the card but where card has no link to the graph node
+      graphNode.card.links
+        .filter(nodesLink =>
+          nodesLink.id === card.id
+          && ArrayUtils.containsNot(card.links, nodesLink, (a, b) => a.id === b.id)
+        )
+        .forEach(foundNodesLink => ArrayUtils.removeElement(graphNode.card.links, foundNodesLink))
+    );
+
+    /**
+     * create new links to the specified card
+     */
+    card.links.forEach(link =>
+      this.graphService.nodes
+        .filter(graphNode =>
+          graphNode.card.id === link.id
+          && ArrayUtils.containsNot(graphNode.card.links, link, (a, b) => a.id === b.id)
+        )
+        .forEach(foundNode => foundNode.card.links.push(card))
+    );
+
+
+    /**
+     * now, after the underlying model has been updated to the new situation, the graph also must be updated
+     */
+    this.visualizationService.recreateLinks(card);
   }
 }
