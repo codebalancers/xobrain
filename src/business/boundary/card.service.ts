@@ -174,7 +174,7 @@ export class CardService {
     c.content = '';
     c.title = '';
     c.links.push(parentCard);
-    c.modified = true;
+    c.modified = false;
 
     return Observable.of(c);
   }

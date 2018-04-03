@@ -26,6 +26,11 @@ export class XobrainService implements OnDestroy {
           this.graphService.removeNode(this.card.id);
         }
 
+        // if the previous card was modified, auto-save that card
+        if (LangUtils.isDefined(this.card) && this.card.modified === true) {
+          this.cardService.save(this.card).subscribe(() => console.log('card was auto-saved'));
+        }
+
         this.card = card;
         this.visualizationService.createLinksForCard(card);
       });
