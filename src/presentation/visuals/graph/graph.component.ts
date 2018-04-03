@@ -1,15 +1,9 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import { GraphOptions, Link, Node } from '../../d3/models';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { GraphService } from '../../services/graph.service';
 import { Subject } from 'rxjs/Subject';
+import { Link } from '../../d3/models/link';
+import { Node } from '../../d3/models/node';
+import { GraphOptions } from '../../d3/models/force-directed-graph';
 
 @Component({
   selector: 'graph',

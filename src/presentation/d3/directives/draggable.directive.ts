@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { Node } from '../models';
 import { D3Service } from '../d3.service';
 import { GraphService } from '../../services/graph.service';
+import { Node } from '../models/node';
 
 @Directive({
   selector: '[draggableNode]'

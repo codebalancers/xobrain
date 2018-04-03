@@ -1,4 +1,5 @@
-import { Link, Node } from '../presentation/d3/models';
+import { Link } from '../presentation/d3/models/link';
+import { Node } from '../presentation/d3/models/node';
 
 export class LinkUtils {
   public static equals(l1: Link, l2: Link): boolean {

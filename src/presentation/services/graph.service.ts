@@ -1,10 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { D3Service, ForceDirectedGraph, Link, Node } from '../d3';
 import { LangUtils } from '../../util/lang.utils';
 import { GraphOptions } from '../d3/models';
 import { Subject } from 'rxjs/Subject';
 import { ArrayUtils } from '../../util/array.utils';
 import { LinkUtils } from '../../util/link.utils';
+import { Link } from '../d3/models/link';
+import { ForceDirectedGraph } from '../d3/models/force-directed-graph';
+import { D3Service } from '../d3/d3.service';
+import { Node } from '../d3/models/node';
 
 
 @Injectable()

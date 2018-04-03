@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Node } from '../../../d3';
 import { EditService } from '../../../services/edit.service';
 import { Subject } from 'rxjs/Subject';
 import { CardEntity } from '../../../../business/entity/card.entity';
+import { XobrainService } from '../../../../business/boundary/xobrain.service';
+import { Node } from '../../../d3/models/node';
 
 @Component({
   selector: '[nodeVisual]',
@@ -41,7 +42,7 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
 
   @Input('nodeVisual') node: Node;
 
-  constructor(private editService: EditService) {
+  constructor(private editService: EditService, private xobrainService: XobrainService) {
   }
 
   ngOnInit() {
@@ -50,12 +51,17 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
       .subscribe((card: CardEntity) => this.selected = card.id === this.node.card.id);
   }
 
+  ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
+  }
+
   handleClick() {
     this.editService.cardSelected(this.node.card);
   }
 
   handleAddClick() {
-    this.editService.branchCard(this.node.card);
+    this.xobrainService.branchCard(this.node.card);
   }
 
   handleMouseEnter() {
@@ -68,10 +74,5 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
 
   handleMouseLeave() {
     this.showAdd = false;
-  }
-
-  ngOnDestroy(): void {
-    this.componentDestroyed$.next();
-    this.componentDestroyed$.complete();
   }
 }

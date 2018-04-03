@@ -1,8 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { CardEntity } from '../../business/entity/card.entity';
 import { CardService } from '../../business/boundary/card.service';
-import { GraphService } from './graph.service';
-import { Link, Node } from '../d3/models';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
@@ -13,7 +11,7 @@ export class EditService implements OnDestroy {
   private _cardModifiedSubject = new BehaviorSubject<boolean>(false);
   public readonly cardModifiedSubject$ = this._cardModifiedSubject.asObservable();
 
-  constructor(private cardService: CardService, private graphService: GraphService) {
+  constructor(private cardService: CardService) {
   }
 
   ngOnDestroy(): void {
@@ -41,33 +39,6 @@ export class EditService implements OnDestroy {
       return;
     }
 
-    this._cardSelectedSubject.next(card);
-
-    this.cardService
-      .updateLinks(card)
-      .subscribe(card => {
-        const nodes: Node[] = [];
-        const links: Link[] = [];
-
-        const parentNode = this.graphService.getNode(card.id);
-
-        card.links.forEach(l => {
-          const nc = new Node(l);
-          nodes.push(nc);
-
-          nc.x = parentNode.x;
-          nc.y = parentNode.y;
-
-          links.push(new Link(card.id, l.id));
-        });
-
-        this.graphService.pushElements(nodes, links);
-      });
-  }
-
-  public branchCard(card: CardEntity): void {
-    this.cardService
-      .branchCard(card)
-      .subscribe(newCard => this.cardSelected(newCard, true));
+    this.cardService.updateLinks(card).subscribe(card => this._cardSelectedSubject.next(card));
   }
 }
