@@ -64,4 +64,42 @@ export class VisualizationService {
 
     this.graphService.pushElements(nodes, links);
   }
+
+  /**
+   * Remove all nodes whose distance is longer than specified.
+   *
+   * @param {CardEntity} card from which distance is measured
+   * @param {number} maxDistance maximal distance from card which is allowed
+   */
+  public removeNodesByDistance(card: CardEntity, maxDistance: number) {
+    // reset the distance for each node to initialized
+    this.graphService.nodes.forEach(n => n.distanceToSelected = -1);
+
+    const root = this.graphService.getNode(card.id);
+    root.distanceToSelected = 0;
+    let nodes: Node[] = [ root ];
+
+    for (let distance = 1; distance <= maxDistance; distance++) {
+      console.log('mark nodes', nodes, distance);
+      const childNodes: Node[] = [];
+
+      nodes.forEach(node => {
+        node.card.links.forEach(link => {
+          const linkedNode = this.graphService.getNode(link.id);
+
+          if (LangUtils.isDefined(linkedNode) && linkedNode.distanceToSelected === -1) {
+            linkedNode.distanceToSelected = distance;
+            childNodes.push(linkedNode);
+          }
+
+        })
+      });
+
+      nodes = childNodes;
+    }
+
+    this.graphService.nodes
+      .filter(n => n.distanceToSelected === -1)
+      .forEach(n => this.graphService.removeNode(n.card.id));
+  }
 }

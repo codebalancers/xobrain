@@ -100,10 +100,4 @@ export class GraphService implements OnDestroy {
       .filter(l => LinkUtils.involves(cardId, l))
       .forEach(l => ArrayUtils.removeElement(this.links, l));
   }
-
-  // public removeLinksOfNode(cardId: number): void {
-  //   this.links
-  //     .filter(l => LinkUtils.isLinkOf(cardId, l))
-  //     .forEach(l => ArrayUtils.removeElement(this.links, l));
-  // }
 }

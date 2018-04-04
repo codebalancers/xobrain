@@ -25,6 +25,8 @@ export class CardService {
       return Observable.of(card);
     }
 
+    // TODO also update files and tags
+    // this method potentially causes issues, because multiple instances of the same db entity are created
     return this.linkService
       .getLinks(card.id)
       .map(links => {
