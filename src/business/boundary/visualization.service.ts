@@ -46,8 +46,8 @@ export class VisualizationService {
       const node = new Node(l);
       nodes.push(node);
 
-      node.x = nc.x;
-      node.y = nc.y;
+      node.x = nc.x + (Math.random() - 0.5) * 40;
+      node.y = nc.y + (Math.random() - 0.5) * 40;
 
       links.push(new Link(card.id, l.id));
     });
@@ -57,8 +57,8 @@ export class VisualizationService {
       const parentNode = this.graphService.getNode(ArrayUtils.getFirstElement(card.links).id);
 
       if (LangUtils.isDefined(parentNode)) {
-        nc.x = parentNode.x;
-        nc.y = parentNode.y;
+        nc.x = parentNode.x + (Math.random() - 0.5) * 40;
+        nc.y = parentNode.y + (Math.random() - 0.5) * 40;
       }
     }
 

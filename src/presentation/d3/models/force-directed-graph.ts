@@ -62,9 +62,9 @@ export class ForceDirectedGraph {
       .force('collide',
         d3.forceCollide()
           .strength(FORCES.COLLISION)
-          .iterations(1)
-          .radius(d => d['r'] + 30)
-          .iterations(2)
+          .iterations(10)
+          .radius(d => d['strength'] + 30)
+          .iterations(10)
       );
 
     // Connecting the d3 ticker to an angular event emitter
