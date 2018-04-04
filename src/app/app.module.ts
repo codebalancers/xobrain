@@ -30,6 +30,7 @@ import { DraggableDirective } from '../presentation/d3/directives/draggable.dire
 import { ZoomableDirective } from '../presentation/d3/directives/zoomable.directive';
 import { D3Service } from '../presentation/d3/d3.service';
 import { DbCacheService } from '../business/control/db-cache.service';
+import { CardSearchComponent } from '../presentation/visuals/card-search/card-search.component';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -41,6 +42,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     MyApp,
     HomePage,
     GraphComponent,
+    CardSearchComponent,
     WindowKeyNavListenerDirective,
     NodeVisualComponent,
     LinkVisualComponent,
