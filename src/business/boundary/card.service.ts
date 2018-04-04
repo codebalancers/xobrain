@@ -24,25 +24,19 @@ export class CardService {
     if (card.id < 1) {
       return Observable.of(card);
     }
+    // TODO this method potentially causes issues, because multiple instances of the same db entity are created
 
-    // TODO also update files and tags
-    // this method potentially causes issues, because multiple instances of the same db entity are created
-    return this.linkService
-      .getLinks(card.id)
-      .map(links => {
-        card.links = links;
-        return card;
-      });
+    return this.loadReferences(card);
   }
 
-  public getCard(id: number): Observable<CardEntity> {
-    return Observable
-      .fromPromise(this.dbService.getConnection('card').where('card.id', id))
-      .flatMap(res => {
-        const r = ArrayUtils.getFirstElement(res);
-        return this.mapCard(r);
-      });
-  }
+  // public getCard(id: number): Observable<CardEntity> {
+  //   return Observable
+  //     .fromPromise(this.dbService.getConnection('card').where('card.id', id))
+  //     .flatMap(res => {
+  //       const r = ArrayUtils.getFirstElement(res);
+  //       return this.mapCard(r);
+  //     });
+  // }
 
   public save(card: CardEntity): Observable<CardEntity> {
     console.log('save', card);
@@ -150,6 +144,10 @@ export class CardService {
       return Observable.of(cardEntity);
     }
 
+    return this.loadReferences(cardEntity);
+  }
+
+  private loadReferences(cardEntity: CardEntity): Observable<CardEntity> {
     const filesO = this.fileService.getFiles(cardEntity.id).map(files => {
       cardEntity.files = files;
       return null;
