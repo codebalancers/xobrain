@@ -47,7 +47,12 @@ export class GraphService implements OnDestroy {
     }
 
     if (LangUtils.isDefined(this.graph)) {
-      this.graph.restart();
+      // this.graph.restart();
+      this.graph.simulation.alphaTarget(0.3).restart();
+
+      setTimeout(() => {
+        this.graph.simulation.alphaTarget(0);
+      }, 1000);
     }
   }
 
@@ -100,10 +105,4 @@ export class GraphService implements OnDestroy {
       .filter(l => LinkUtils.involves(cardId, l))
       .forEach(l => ArrayUtils.removeElement(this.links, l));
   }
-
-  // public removeLinksOfNode(cardId: number): void {
-  //   this.links
-  //     .filter(l => LinkUtils.isLinkOf(cardId, l))
-  //     .forEach(l => ArrayUtils.removeElement(this.links, l));
-  // }
 }

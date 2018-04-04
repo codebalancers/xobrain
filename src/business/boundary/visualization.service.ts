@@ -46,8 +46,8 @@ export class VisualizationService {
       const node = new Node(l);
       nodes.push(node);
 
-      node.x = nc.x;
-      node.y = nc.y;
+      node.x = nc.x + (Math.random() - 0.5) * 40;
+      node.y = nc.y + (Math.random() - 0.5) * 40;
 
       links.push(new Link(card.id, l.id));
     });
@@ -57,11 +57,49 @@ export class VisualizationService {
       const parentNode = this.graphService.getNode(ArrayUtils.getFirstElement(card.links).id);
 
       if (LangUtils.isDefined(parentNode)) {
-        nc.x = parentNode.x;
-        nc.y = parentNode.y;
+        nc.x = parentNode.x + (Math.random() - 0.5) * 40;
+        nc.y = parentNode.y + (Math.random() - 0.5) * 40;
       }
     }
 
     this.graphService.pushElements(nodes, links);
+  }
+
+  /**
+   * Remove all nodes whose distance is longer than specified.
+   *
+   * @param {CardEntity} card from which distance is measured
+   * @param {number} maxDistance maximal distance from card which is allowed
+   */
+  public removeNodesByDistance(card: CardEntity, maxDistance: number) {
+    // reset the distance for each node to initialized
+    this.graphService.nodes.forEach(n => n.distanceToSelected = -1);
+
+    const root = this.graphService.getNode(card.id);
+    root.distanceToSelected = 0;
+    let nodes: Node[] = [ root ];
+
+    for (let distance = 1; distance <= maxDistance; distance++) {
+      console.log('mark nodes', nodes, distance);
+      const childNodes: Node[] = [];
+
+      nodes.forEach(node => {
+        node.card.links.forEach(link => {
+          const linkedNode = this.graphService.getNode(link.id);
+
+          if (LangUtils.isDefined(linkedNode) && linkedNode.distanceToSelected === -1) {
+            linkedNode.distanceToSelected = distance;
+            childNodes.push(linkedNode);
+          }
+
+        })
+      });
+
+      nodes = childNodes;
+    }
+
+    this.graphService.nodes
+      .filter(n => n.distanceToSelected === -1)
+      .forEach(n => this.graphService.removeNode(n.card.id));
   }
 }

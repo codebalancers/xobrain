@@ -29,6 +29,7 @@ import { NodeVisualComponent } from '../presentation/visuals/shared/node-visual/
 import { DraggableDirective } from '../presentation/d3/directives/draggable.directive';
 import { ZoomableDirective } from '../presentation/d3/directives/zoomable.directive';
 import { D3Service } from '../presentation/d3/d3.service';
+import { DbCacheService } from '../business/control/db-cache.service';
 
 
 export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
@@ -63,7 +64,7 @@ export function dbInitializer(dbService: DatabaseService): () => Promise<any> {
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     D3Service,
     KeyService,
-    GlobalAppStateService, KeyHandlerService, VisualizationService, XobrainService,
+    GlobalAppStateService, KeyHandlerService, VisualizationService, XobrainService, DbCacheService,
     CardService, CardMapper, LinkService, TagService, FileService, DatabaseService, ElectronService, EditService, GraphService,
     {
       provide: APP_INITIALIZER,

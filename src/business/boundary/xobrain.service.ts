@@ -29,12 +29,16 @@ export class XobrainService implements OnDestroy {
             .save(this.card)
             .subscribe((savedCard) => {
               this.updateReferencesForCard(savedCard);
-              return console.log('card was auto-saved');
+              console.log('card was auto-saved');
+              this.visualizationService.removeNodesByDistance(selectedCard, 2);
             });
         }
         // -- the previous card was an unsaved that is now deselected, in that case the previous card is removed from the graph
-        else if (LangUtils.isDefined(this.card) && this.card.id < 1) {
-          this.graphService.removeNode(this.card.id);
+        else {
+          if (LangUtils.isDefined(this.card) && this.card.id < 1) {
+            this.graphService.removeNode(this.card.id);
+          }
+          this.visualizationService.removeNodesByDistance(selectedCard, 2);
         }
 
         this.card = selectedCard;
@@ -105,10 +109,23 @@ export class XobrainService implements OnDestroy {
 
   public branchCard(card: CardEntity): void {
     /**
-     * in cases when a new card has been added previously but not changed and shall not be saved, the current new card will have the same
-     * id (-1) but a different parent, therefore, we need to enforce the cardSelected event
+     * In cases when a new card has been added previously but not changed and shall not be saved, the current new card will have the same
+     * id (-1) but a different parent, therefore, we need to enforce the cardSelected event.
+     *
+     * If the card that shall be branched was not yet persisted, we need to do that first, before this card can be the
+     * parent of the new card.
      */
-    this.cardService.branchCard(card).subscribe(newCard => this.editService.cardSelected(newCard, true));
+    if (card.id < 1) {
+      this.cardService
+        .save(card)
+        .flatMap(savedCard => {
+          this.updateReferencesForCard(savedCard);
+          return this.cardService.branchCard(savedCard)
+        })
+        .subscribe(newCard => this.editService.cardSelected(newCard, true));
+    } else {
+      this.cardService.branchCard(card).subscribe(newCard => this.editService.cardSelected(newCard, true));
+    }
   }
 
   /**

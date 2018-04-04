@@ -1,5 +1,9 @@
-export class FileEntity {
+import { CacheableEntity } from './cacheable-entity';
+
+export class FileEntity implements CacheableEntity {
   id: number = -1;
+  entityName = 'file';
+
   modificationDate: Date;
 
   name: string;

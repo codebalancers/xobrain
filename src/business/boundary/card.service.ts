@@ -9,6 +9,7 @@ import { TagService } from './tag.service';
 import { FileService } from './file.service';
 import { CardMapper } from './card.mapper';
 import { AssertUtils } from '../../util/assert.utils';
+import { DbCacheService } from '../control/db-cache.service';
 
 @Injectable()
 export class CardService {
@@ -17,6 +18,7 @@ export class CardService {
               private cardMapper: CardMapper,
               private linkService: LinkService,
               private tagService: TagService,
+              private cache: DbCacheService,
               private fileService: FileService) {
   }
 
@@ -24,23 +26,19 @@ export class CardService {
     if (card.id < 1) {
       return Observable.of(card);
     }
+    // TODO this method potentially causes issues, because multiple instances of the same db entity are created
 
-    return this.linkService
-      .getLinks(card.id)
-      .map(links => {
-        card.links = links;
-        return card;
-      });
+    return this.loadReferences(card);
   }
 
-  public getCard(id: number): Observable<CardEntity> {
-    return Observable
-      .fromPromise(this.dbService.getConnection('card').where('card.id', id))
-      .flatMap(res => {
-        const r = ArrayUtils.getFirstElement(res);
-        return this.mapCard(r);
-      });
-  }
+  // public getCard(id: number): Observable<CardEntity> {
+  //   return Observable
+  //     .fromPromise(this.dbService.getConnection('card').where('card.id', id))
+  //     .flatMap(res => {
+  //       const r = ArrayUtils.getFirstElement(res);
+  //       return this.mapCard(r);
+  //     });
+  // }
 
   public save(card: CardEntity): Observable<CardEntity> {
     console.log('save', card);
@@ -71,6 +69,7 @@ export class CardService {
         .flatMap(d => {
           // set auto-generated id
           card.id = d[ 0 ];
+          this.cache.setObject(card);
           return this.updateReferences(card);
         })
         .map(() => {
@@ -127,7 +126,8 @@ export class CardService {
           c.content = 'Write something...';
           c.modified = true;
 
-          return this.save(c);
+          return this
+            .save(c).do(savedCard => this.cache.setObject(savedCard));
         }
 
         console.log('getInitialCard', card);
@@ -148,6 +148,10 @@ export class CardService {
       return Observable.of(cardEntity);
     }
 
+    return this.loadReferences(cardEntity);
+  }
+
+  private loadReferences(cardEntity: CardEntity): Observable<CardEntity> {
     const filesO = this.fileService.getFiles(cardEntity.id).map(files => {
       cardEntity.files = files;
       return null;

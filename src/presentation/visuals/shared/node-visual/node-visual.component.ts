@@ -14,7 +14,7 @@ import { Node } from '../../../d3/models/node';
       <svg:g (mousedown)="handleClick()" class="nodeContent">
         <svg:circle
           [ngClass]="{'node': !selected, 'selected': selected}"
-          [attr.fill]="node.color"
+          [attr.fill]="getFillColor()"
           cx="0"
           cy="0"
           [attr.r]="node.r">
@@ -54,6 +54,14 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.componentDestroyed$.next();
     this.componentDestroyed$.complete();
+  }
+
+  getFillColor(): string {
+    if (this.selected) {
+      return 'yellow';
+    } else {
+      return this.node.color
+    }
   }
 
   handleClick() {

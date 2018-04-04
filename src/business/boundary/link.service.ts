@@ -5,6 +5,7 @@ import { CardEntity } from '../entity/card.entity';
 import { CardMapper } from './card.mapper';
 import { LangUtils } from '../../util/lang.utils';
 import { AssertUtils } from '../../util/assert.utils';
+import { DbCacheService } from '../control/db-cache.service';
 
 interface LinkInsert {
   card1_id: number,
@@ -16,7 +17,8 @@ interface LinkInsert {
 @Injectable()
 export class LinkService {
   constructor(private dbService: DatabaseService,
-              private cardMapper: CardMapper) {
+              private cardMapper: CardMapper,
+              private cache: DbCacheService) {
   }
 
   private sortLinks(cardId1: number, cardId2: number): { cardId1: number, cardId2: number } {

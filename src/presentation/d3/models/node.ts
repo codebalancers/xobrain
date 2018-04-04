@@ -2,7 +2,7 @@ import APP_CONFIG from '../../../app/app.config';
 import { CardEntity } from '../../../business/entity/card.entity';
 
 export class Node implements d3.SimulationNodeDatum {
-  // optional - defining optional implementation properties - required for relevant typing assistance
+  // -- required fields used by d3
   index?: number;
   x?: number;
   y?: number;
@@ -10,6 +10,12 @@ export class Node implements d3.SimulationNodeDatum {
   vy?: number;
   fx?: number | null;
   fy?: number | null;
+
+  /**
+   * Minimal required hobs to the selected node.
+   * @type {number}
+   */
+  distanceToSelected = -1;
 
   get linkCount(): number {
     return this.card.links.length;
@@ -24,6 +30,10 @@ export class Node implements d3.SimulationNodeDatum {
 
   get r() {
     return 50 * this.normal() + 10;
+  }
+
+  get strength() {
+    return 18;
   }
 
   get fontSize() {
