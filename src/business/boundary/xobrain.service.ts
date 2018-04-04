@@ -115,12 +115,12 @@ export class XobrainService implements OnDestroy {
      * If the card that shall be branched was not yet persisted, we need to do that first, before this card can be the
      * parent of the new card.
      */
-    if (this.card.id < 1) {
+    if (card.id < 1) {
       this.cardService
-        .save(this.card)
+        .save(card)
         .flatMap(savedCard => {
           this.updateReferencesForCard(savedCard);
-          return this.cardService.branchCard(card)
+          return this.cardService.branchCard(savedCard)
         })
         .subscribe(newCard => this.editService.cardSelected(newCard, true));
     } else {
