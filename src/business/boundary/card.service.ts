@@ -9,6 +9,7 @@ import { TagService } from './tag.service';
 import { FileService } from './file.service';
 import { CardMapper } from './card.mapper';
 import { AssertUtils } from '../../util/assert.utils';
+import { DbCacheService } from '../control/db-cache.service';
 
 @Injectable()
 export class CardService {
@@ -17,6 +18,7 @@ export class CardService {
               private cardMapper: CardMapper,
               private linkService: LinkService,
               private tagService: TagService,
+              private cache: DbCacheService,
               private fileService: FileService) {
   }
 
@@ -67,6 +69,7 @@ export class CardService {
         .flatMap(d => {
           // set auto-generated id
           card.id = d[ 0 ];
+          this.cache.setObject(card);
           return this.updateReferences(card);
         })
         .map(() => {
@@ -123,7 +126,8 @@ export class CardService {
           c.content = 'Write something...';
           c.modified = true;
 
-          return this.save(c);
+          return this
+            .save(c).do(savedCard => this.cache.setObject(savedCard));
         }
 
         console.log('getInitialCard', card);

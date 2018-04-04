@@ -1,8 +1,11 @@
 import { TagEntity } from './tag.entity';
 import { FileEntity } from './file.entity';
+import { CacheableEntity } from './cacheable-entity';
 
-export class CardEntity {
+export class CardEntity implements CacheableEntity {
   id: number = -1;
+  entityName = 'card';
+
   modificationDate: Date;
 
   private _title: string;

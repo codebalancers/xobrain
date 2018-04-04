@@ -1,6 +1,12 @@
-export class TagEntity {
+import { CacheableEntity } from './cacheable-entity';
+
+export class TagEntity implements CacheableEntity {
+  id: number = -1;
+  entityName = 'tag';
+
   constructor(public name?: string,
-              public id: number = -1,
+              id: number = -1,
               public modificationDate?: Date) {
+    this.id = id;
   }
 }

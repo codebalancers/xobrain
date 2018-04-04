@@ -47,7 +47,12 @@ export class GraphService implements OnDestroy {
     }
 
     if (LangUtils.isDefined(this.graph)) {
-      this.graph.restart();
+      // this.graph.restart();
+      this.graph.simulation.alphaTarget(0.3).restart();
+
+      setTimeout(() => {
+        this.graph.simulation.alphaTarget(0);
+      }, 1000);
     }
   }
 
