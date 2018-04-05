@@ -7,6 +7,7 @@ import { GraphService } from '../../presentation/services/graph.service';
 import { LangUtils } from '../../util/lang.utils';
 import { Subject } from 'rxjs/Subject';
 import { VisualizationService } from './visualization.service';
+import { Observable } from 'rxjs/Observable';
 
 
 @Injectable()
@@ -20,29 +21,7 @@ export class XobrainService implements OnDestroy {
               private graphService: GraphService) {
     editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
-      .subscribe((selectedCard: CardEntity) => {
-        this.visualizationService.createLinksForCard(selectedCard);
-
-        // -- if the previous card was modified, auto-save that card and update the linked cards
-        if (LangUtils.isDefined(this.card) && this.card.modified === true) {
-          this.cardService
-            .save(this.card)
-            .subscribe((savedCard) => {
-              this.updateReferencesForCard(savedCard);
-              console.log('card was auto-saved');
-              this.visualizationService.removeNodesByDistance(selectedCard, 2);
-            });
-        }
-        // -- the previous card was an unsaved that is now deselected, in that case the previous card is removed from the graph
-        else {
-          if (LangUtils.isDefined(this.card) && this.card.id < 1) {
-            this.graphService.removeNode(this.card.id);
-          }
-          this.visualizationService.removeNodesByDistance(selectedCard, 2);
-        }
-
-        this.card = selectedCard;
-      });
+      .subscribe((selectedCard: CardEntity) => this.handleCardSelection(selectedCard));
 
     // init application
     this.cardService
@@ -120,7 +99,7 @@ export class XobrainService implements OnDestroy {
         .save(card)
         .flatMap(savedCard => {
           this.updateReferencesForCard(savedCard);
-          return this.cardService.branchCard(savedCard)
+          return this.cardService.branchCard(savedCard);
         })
         .subscribe(newCard => this.editService.cardSelected(newCard, true));
     } else {
@@ -166,5 +145,28 @@ export class XobrainService implements OnDestroy {
      * now, after the underlying model has been updated to the new situation, the graph also must be updated
      */
     this.visualizationService.recreateLinks(card);
+  }
+
+  private handleCardSelection(selectedCard: CardEntity) {
+    let o = Observable.of(null);
+
+    // -- if the previous card was modified, auto-save that card and update the linked cards
+    if (LangUtils.isDefined(this.card) && this.card.modified === true) {
+      o = this.cardService
+        .save(this.card)
+        .map(savedCard => this.updateReferencesForCard(savedCard));
+    }
+    // -- the previous card was an unmodified, unsaved that is now deselected, in that case the previous card is removed from the graph
+    else if (LangUtils.isDefined(this.card) && this.card.id < 1) {
+      this.graphService.removeNode(this.card.id);
+    }
+
+    // -- in any case: create new links for selected card and remove far-away nodes
+    o.subscribe(savedCard => {
+      this.visualizationService.createLinksForCard(selectedCard);
+      this.visualizationService.removeNodesByDistance(selectedCard, 2);
+
+      this.card = selectedCard;
+    });
   }
 }

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { CardEntity } from '../../../../business/entity/card.entity';
 import { XobrainService } from '../../../../business/boundary/xobrain.service';
 import { Node } from '../../../d3/models/node';
+import { LangUtils } from '../../../../util/lang.utils';
 
 @Component({
   selector: '[nodeVisual]',
@@ -37,7 +38,7 @@ import { Node } from '../../../d3/models/node';
 })
 export class NodeVisualComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
-  selected: boolean = false;
+  _selected: CardEntity;
   showAdd: boolean = false;
 
   @Input('nodeVisual') node: Node;
@@ -48,12 +49,20 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.editService.cardSelectedSubject$
       .takeUntil(this.componentDestroyed$)
-      .subscribe((card: CardEntity) => this.selected = card.id === this.node.card.id);
+      .subscribe((card: CardEntity) => this._selected = card);
   }
 
   ngOnDestroy(): void {
     this.componentDestroyed$.next();
     this.componentDestroyed$.complete();
+  }
+
+  get selected(): boolean {
+    if (LangUtils.isDefined(this._selected)) {
+      return this._selected.id === this.node.card.id;
+    } else {
+      return false;
+    }
   }
 
   getFillColor(): string {
@@ -62,7 +71,7 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
     } else if (this.node.distanceToSelected === 1) {
       return 'orange';
     } else {
-      return this.node.color
+      return this.node.color;
     }
   }
 
