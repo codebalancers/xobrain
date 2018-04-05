@@ -5,6 +5,7 @@ import { CardEntity } from '../entity/card.entity';
 import { GraphService } from '../../presentation/services/graph.service';
 import { Link } from '../../presentation/d3/models/link';
 import { Node } from '../../presentation/d3/models/node';
+import { AssertUtils } from '../../util/assert.utils';
 
 @Injectable()
 export class VisualizationService {
@@ -76,6 +77,8 @@ export class VisualizationService {
     this.graphService.nodes.forEach(n => n.distanceToSelected = -1);
 
     const root = this.graphService.getNode(card.id);
+    AssertUtils.isDefined(root, 'could not find root node for given card with id: ' + card.id)
+
     root.distanceToSelected = 0;
     let nodes: Node[] = [ root ];
 

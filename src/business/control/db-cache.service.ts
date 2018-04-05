@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CacheableEntity } from '../entity/cacheable-entity';
 import { LangUtils } from '../../util/lang.utils';
+import { AssertUtils } from '../../util/assert.utils';
 
 @Injectable()
 export class DbCacheService {
@@ -15,6 +16,7 @@ export class DbCacheService {
   }
 
   public setObject(object: CacheableEntity): any {
+    AssertUtils.isTrue(object.id > 0, 'cannot cache non-persisted objects');
     this.cache.set(`${object.entityName}_${object.id}`, object);
     return object;
   }
