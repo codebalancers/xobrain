@@ -59,6 +59,8 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
   getFillColor(): string {
     if (this.selected) {
       return 'yellow';
+    } else if (this.node.distanceToSelected === 1) {
+      return 'orange';
     } else {
       return this.node.color
     }
