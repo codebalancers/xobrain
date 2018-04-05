@@ -86,6 +86,11 @@ export class XobrainService implements OnDestroy {
     this.editService.cardSelected(c);
   }
 
+  /**
+   * Create a new card with the specified card as parent.
+   *
+   * @param {CardEntity} card parent card from which shall be branched a new card
+   */
   public branchCard(card: CardEntity): void {
     /**
      * In cases when a new card has been added previously but not changed and shall not be saved, the current new card will have the same
@@ -103,7 +108,20 @@ export class XobrainService implements OnDestroy {
         })
         .subscribe(newCard => this.editService.cardSelected(newCard, true));
     } else {
-      this.cardService.branchCard(card).subscribe(newCard => this.editService.cardSelected(newCard, true));
+      Observable.of(card)
+        .flatMap((c: CardEntity) => {
+          /**
+           *  if the parent card is not the current selected card and has no links, the probability is high, that the links of the parent
+           *  card have never been loaded, so we need to do this now.
+           */
+          if ((c.id) !== this.card.id && c.links.length === 0) {
+            return this.cardService.updateLinks(c);
+          } else {
+            return Observable.of(c);
+          }
+        })
+        .flatMap(c => this.cardService.branchCard(card))
+        .subscribe(newCard => this.editService.cardSelected(newCard, true));
     }
   }
 
@@ -162,7 +180,7 @@ export class XobrainService implements OnDestroy {
     }
 
     // -- in any case: create new links for selected card and remove far-away nodes
-    o.subscribe(savedCard => {
+    o.subscribe(() => {
       this.visualizationService.createLinksForCard(selectedCard);
       this.visualizationService.removeNodesByDistance(selectedCard, 2);
 

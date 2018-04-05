@@ -26,19 +26,8 @@ export class CardService {
     if (card.id < 1) {
       return Observable.of(card);
     }
-    // TODO this method potentially causes issues, because multiple instances of the same db entity are created
-
     return this.loadReferences(card);
   }
-
-  // public getCard(id: number): Observable<CardEntity> {
-  //   return Observable
-  //     .fromPromise(this.dbService.getConnection('card').where('card.id', id))
-  //     .flatMap(res => {
-  //       const r = ArrayUtils.getFirstElement(res);
-  //       return this.mapCard(r);
-  //     });
-  // }
 
   public save(card: CardEntity): Observable<CardEntity> {
     console.log('save', card);

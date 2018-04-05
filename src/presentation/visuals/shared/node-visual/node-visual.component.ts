@@ -84,10 +84,6 @@ export class NodeVisualComponent implements OnInit, OnDestroy {
   }
 
   handleMouseEnter() {
-    // not allowed to branch unsaved cards
-    if (this.node.card.id < 1) {
-      return;
-    }
     this.showAdd = true;
   }
 
