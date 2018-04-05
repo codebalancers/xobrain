@@ -77,7 +77,7 @@ export class VisualizationService {
     this.graphService.nodes.forEach(n => n.distanceToSelected = -1);
 
     const root = this.graphService.getNode(card.id);
-    AssertUtils.isDefined(root, 'could not find root node for given card with id: ' + card.id)
+    AssertUtils.isDefined(root, 'could not find root node for given card with id: ' + card.id);
 
     root.distanceToSelected = 0;
     let nodes: Node[] = [ root ];
