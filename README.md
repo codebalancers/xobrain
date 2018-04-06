@@ -35,3 +35,7 @@ yarn run app
 * d3
 * knex
 * sqlite
+
+
+## Icon
+The application icon was created by Zlatko Najdenovski and published under https://creativecommons.org/licenses/by/3.0/
